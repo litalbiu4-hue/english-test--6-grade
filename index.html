@@ -166,7 +166,7 @@ const W_CLASS = [
  ["describe","לתאר"],["document","מסמך"],["example","דוגמה"],["first name","שם פרטי"],
  ["folder","תיקייה"],["guess","לנחש"],["keyboard","מקלדת"],["quiz","בוחן, חידון"],
  ["surname","שם משפחה"],["task","משימה"],["read","לקרוא"],["match","להתאים"],
- ["listen","להקשיב"],["choose","לבחור"],["copy","להעתיק"],["write","לכתוב"]
+ ["listen","להקשיב"],["choose","לבחור"],["copy","להעתיק"],["write","לכתוב"],["open","לפתוח"],["learn","ללמוד"],["picture","תמונה"],["sentence","משפט"],["word","מילה"],["answer","תשובה"],["text","טקסט"],["hand","יד"]
 ];
 const W_UNIT = [
  ["afraid","פוחד, מפחד"],["glad","שמח"],["leave","לעזוב, להשאיר"],["order","להזמין"],["team","קבוצה"],
@@ -188,6 +188,26 @@ const W_FOOD = [
  ["cheese","גבינה"],["coffee","קפה"],["cookies","עוגיות"],["egg","ביצה"],["hamburger","המבורגר"],
  ["juice","מיץ"],["lettuce","חסה"],["onion","בצל"],["peach","אפרסק"],["pepper","פלפל"],["plum","שזיף"],
  ["tea","תה"],["tomato","עגבנייה"]
+];
+const W_SOUNDS = [
+ ["day","יום"],["stay","להישאר"],["play","לשחק"],["way","דרך"],["say","להגיד"],["rain","גשם"],["train","רכבת"],["same","אותו דבר, זהה"],
+ ["game","משחק"],["late","מאוחר"],["wait","לחכות"],["take","לקחת"],["make","להכין, לעשות"],["plane","מטוס"],["always","תמיד"],
+ ["feet","כפות רגליים"],["teeth","שיניים"],["sheep","כבשה, כבשים"],["beans","שעועית"],["ear","אוזן"],["meat","בשר"],["leaf","עלה"],
+ ["eat","לאכול"],["sweet","מתוק"],["peas","אפונה"],["need","צריך"],["meet","לפגוש"],["sleep","לישון"],["keep","לשמור"],["tree","עץ"],
+ ["year","שנה"],["seat","מושב"],["cheap","זול"],
+ ["bike","אופניים"],["cry","לבכות"],["try","לנסות"],["like","לחבב"],["kite","עפיפון"],["ride","לרכוב"],["white","לבן"],["fly","לעוף, להעיף"],
+ ["boat","סירה"],["home","בית"],["nose","אף"],["bone","עצם"],["toe","אצבע ברגל"],["go","ללכת, לנסוע"],["rope","חבל"],["hope","לקוות"],
+ ["note","פתק"],["joke","בדיחה"],["old","זקן, ישן"],
+ ["tube","שפופרת"],["rug","שטיח"],["ice","קרח"],["cat","חתול"],["luck","מזל"],
+ ["maid","עוזרת בית"],["pail","דלי"],["bait","פיתיון"],["hate","לשנוא"],["mane","רעמה (של סוס/אריה)"],["cape","גלימה"],["tap","ברז"],["tape","סלוטייפ, סרט הדבקה"],
+ ["ran","רץ (בעבר)"],["rate","קצב, מחיר"],["pan","מחבת"],["pen","עט"],["van","טנדר, מסחרית"],["vane","שבשבת"],["dame","גבירה"],["dam","סכר"],["plan","תוכנית"],["mat","שטיחון"],
+ ["away","הרחק, משם"],["today","היום"],["Saturday","שבת"],["come","לבוא"],["back","בחזרה"],["run","לרוץ"],
+ ["sat","ישב (בעבר)"],["set","ערכה, סט"],["seam","תפר"],["deed","מעשה"],["dad","אבא"],["did","עשה (בעבר)"],["weed","עשב שוטה"],["wed","להתחתן"],["wood","עץ (החומר)"],
+ ["seep","לחלחל, לטפטף"],["neat","מסודר"],["net","רשת"],["mate","חבר, שותף"],["teacher","מורה"],["want","לרצות"],["drink","לשתות"],
+ ["my","שלי (לפני שם: my dog)"],["mine","שלי (בסוף: It's mine)"],["five","חמש"],["nine","תשע"],["ten","עשר"],["one","אחד"],["bit","חתיכה קטנה"],["bite","לנשוך"],["by","ליד, על ידי"],
+ ["man","גבר, איש"],["pine","עץ אורן"],["pin","סיכה"],["kit","ערכה"],["rid","להיפטר (get rid of)"],["red","אדום"],["sit","לשבת"],["site","אתר"],["dine","לסעוד"],["hive","כוורת"],
+ ["number","מספר"],["color","צבע"],["pink","ורוד"],["cream","קרם, שמנת"],["sing","לשיר"],["no","לא"],["hop","לקפץ"],["top","חלק עליון, פסגה"],["coke","קוקה-קולה"],
+ ["cot","מיטת תינוק"],["cop","שוטר"],["hot","חם"],["gate","שער"],["got","קיבל (בעבר)"],["get","לקבל"],["but","אבל"],["beat","לנצח"],["live","לגור, לחיות"],["potatoes","תפוחי אדמה"]
 ];
 const W_BOOKLET = [
  ["fruit","פרי"],["blue","כחול"],["June","יוני"],["glue","דבק"],["suit","חליפה"],["girl","ילדה"],
@@ -306,6 +326,27 @@ function genEmoji(n){
   const all=FOOD_EMOJI.map(x=>x[1]);
   return sample(FOOD_EMOJI,n).map(([e,w])=>({t:"mc",q:`מה יש בתמונה? <span style="font-size:54px;display:block;line-height:1.2">${e}</span>`,o:[w,...sample(all.filter(x=>x!==w),3)],enOpts:true}));
 }
+const SOUND_Q = [
+ mcEn(`Which word has a long a sound (like in "cake")?`,["train","cat","plan","ran"]),
+ mcEn(`Which word has a long a sound?`,["play","pan","mat","fat"]),
+ mcEn(`Which word has a long a sound?`,["game","dam","tap","van"]),
+ mcEn(`Which word has a long e sound (like in "tree")?`,["sheep","set","wed","dad"]),
+ mcEn(`Which word has a long e sound?`,["meat","net","sat","did"]),
+ mcEn(`Which word has a long e sound?`,["cheese","pen","red","ten"]),
+ mcEn(`Which word has a long i sound (like in "five")?`,["kite","kit","sit","pin"]),
+ mcEn(`Which word has a long i sound?`,["ride","rid","red","bit"]),
+ mcEn(`Which word has a long i sound?`,["nine","man","pen","hit"]),
+ mcEn(`Which word has a long o sound (like in "boat")?`,["home","hot","hop","top"]),
+ mcEn(`Which word has a long o sound?`,["goat","got","get","cot"]),
+ mcEn(`Which word has a long o sound?`,["rope","cop","hop","but"]),
+ mcEn(`Which word rhymes with "day"?`,["play","plan","mat","cat"]),
+ mcEn(`Which word rhymes with "five"?`,["dive","need","make","pen"]),
+ mcEn(`Which word rhymes with "my"?`,["fly","ten","need","make"]),
+ mcEn(`Joe lives on a ___. (סירה)`,["boat","goat","note","bone"]),
+ mcEn(`Living on a boat is no ___! (בדיחה)`,["joke","rope","nose","note"]),
+ mcEn(`She likes to fly a ___. (עפיפון)`,["kite","bite","bike","site"]),
+ mcEn(`Rain, rain, go ___!`,["away","today","play","stay"]),
+];
 const FOOD_HARD = [
  mcEn(`Which one is a drink?`,["lemonade","cucumber","toast","sausage"]),
  mcEn(`Which one is a vegetable?`,["cucumber","cookies","pie","cola"]),
@@ -408,6 +449,7 @@ const NOUN_HARD = [
  {t:"type",q:`הפוך לרבים: ${en("<b>There is a strange person on that bench.</b>")}`,a:["There are strange people on those benches.","There are strange people on that bench.","There are some strange people on those benches."],form:true,ex:PL_TIP},
  {t:"type",q:`הפוך לרבים: ${en("<b>She has a new shelf for this toy.</b>")}`,a:["She has new shelves for these toys.","She has some new shelves for these toys."],form:true,ex:PL_TIP+" שימו לב: she has נשאר has – כי she עדיין אחת."},
  {t:"type",q:`הפוך לרבים: ${en("<b>There is a lady in the palace.</b>")}`,a:["There are ladies in the palace.","There are some ladies in the palace.","There are ladies in the palaces."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>Put a cherry and a strawberry on that cake.</b>")}`,a:["Put cherries and strawberries on those cakes.","Put some cherries and some strawberries on those cakes.","Put some cherries and strawberries on those cakes.","Put cherries and strawberries on that cake.","Put some cherries and some strawberries on that cake.","Put some cherries and strawberries on that cake."],form:true,ex:PL_TIP+" cherry ו-strawberry: עיצור + y ← ies. ה-Put נשאר – זו הוראה."},
  {t:"type",q:`הפוך לרבים: ${en("<b>That knife is sharp.</b>")}`,a:["Those knives are sharp."],form:true,ex:PL_TIP},
  {t:"type",q:`הפוך ליחיד: ${en("<b>There are many new glasses in our kitchen.</b>")}`,a:["There is a new glass in our kitchen."],form:true,ex:PL_TIP2+" many נעלם ובמקומו a."},
  {t:"type",q:`הפוך ליחיד: ${en("<b>These parties are fun.</b>")}`,a:["This party is fun."],form:true,ex:PL_TIP2},
@@ -767,16 +809,30 @@ unit: () =>
  SEC("מילים חדשות – יחידה 1",wordList(W_UNIT))+
  SEC("שמות תואר (ספר עמ' 22)",wordList(W_ADJ)),
 
-food: () =>
- SEC("צלילים (חוברת עמ' 8–9)",`<table class="rt"><tr><th>צליל</th><th>איך זה נשמע</th><th class="e">Examples</th></tr>
+sounds: () =>
+ SEC("צלילים (חוברת עמ' 4–9)",`<table class="rt"><tr><th>צליל</th><th>איך זה נשמע</th><th class="e">Examples</th></tr>
+  <tr><td>Long a</td><td>"אֵיי" – כמו השם של האות A</td><td class="e">a_e: cake, game, same, late<br>ai: rain, train, wait<br>ay: day, play, say, stay</td></tr>
+  <tr><td>Long e</td><td>"אִי" ארוך – כמו השם של האות E</td><td class="e">ee: tree, sheep, feet, green<br>ea: eat, meat, tea, leaf</td></tr>
+  <tr><td>Long i</td><td>"אַיי" – כמו השם של האות I</td><td class="e">i_e: five, nine, kite, bike, ride<br>y / ie: my, cry, fly, pie</td></tr>
+  <tr><td>Long o</td><td>"אוֹוּ" – כמו השם של האות O</td><td class="e">o_e: home, nose, rope, joke<br>oa: boat, goat, toast<br>oe / o: toe, go, no</td></tr>
   <tr><td>Long u</td><td>"אוּ" ארוך / "יוּ"</td><td class="e">June, blue, glue, fruit, juice, tube, suit</td></tr>
   <tr><td>Soft g</td><td>g לפני e, i, y נשמעת כמו "ג'"</td><td class="e">giraffe, page, cage, age, orange</td></tr>
   <tr><td>Hard g</td><td>"ג" רגילה</td><td class="e">goat, green, girl, garden, rug</td></tr>
   <tr><td>Soft c</td><td>c לפני e, i, y נשמעת כמו "ס"</td><td class="e">ice, rice, face, mice, pencil, cereal, cent</td></tr>
   <tr><td>Hard c</td><td>"ק"</td><td class="e">cat, cap, cake, carrot, candy, computer</td></tr></table>
+  ${KEY("e שקטה בסוף מאריכה את התנועה: <span class='en'>cap → cape, kit → kite, hop → hope</span>.")}
   ${KEY("הכלל: <span class='en'>c</span> ו-<span class='en'>g</span> \"מתרככות\" לפני <span class='en'>e, i, y</span>.")}`)+
- SEC("אוכל",wordList(W_FOOD))+
- SEC("מילים נוספות מהחוברת",wordList(W_BOOKLET)),
+ SEC("מילים מדפי הצלילים (חוברת עמ' 4–7)",wordList(W_SOUNDS))+
+ SEC("מילים מחוברת עמ' 8–9",wordList(W_BOOKLET)),
+food: () =>
+ SEC("אוכל – חוברת עמ' 16–17",`<p>במבחן צריך לדעת לתרגם. טיפ: מחלקים לקבוצות – פירות, ירקות, שתייה, מנות ומתוקים.</p>
+  <table class="rt"><tr><th>קבוצה</th><th class="e">Words</th></tr>
+  <tr><td>🍎 פירות</td><td class="e">apple, orange, peach, plum, fruit salad</td></tr>
+  <tr><td>🥕 ירקות</td><td class="e">carrot, cucumber, lettuce, onion, pepper, potato, tomato</td></tr>
+  <tr><td>🥤 שתייה</td><td class="e">coffee, cola, juice, lemonade, tea</td></tr>
+  <tr><td>🍔 מנות</td><td class="e">bread, toast, cereal, cheese, egg, chicken, hamburger, hot dog, sausage, meatballs, pie</td></tr>
+  <tr><td>🍦 מתוקים</td><td class="e">candy, chocolate cake, cookies, ice cream</td></tr></table>`)+
+ SEC("כל מילות האוכל",wordList(W_FOOD)),
 
 nouns: () =>
  SEC("מה זה שם עצם (Noun)?",`<p>שם עצם הוא <b>אדם, מקום, בעל חיים, דבר או רעיון</b>.</p>
@@ -950,8 +1006,10 @@ const TOPICS = [
   levels:[()=>genEnHe(W_CLASS,10),()=>shuffle([...genHeEn(W_CLASS,5),...genClassSent(5)]),()=>sample(CLASS_HARD,10)]},
  {id:"unit",group:"א. אוצר מילים",icon:"🗾",title:"יחידה 1: יפן וקופי שלג",desc:"מילים חדשות + שמות תואר – ספר עמ' 12, 20, 22",
   levels:[()=>genEnHe([...W_UNIT,...W_ADJ],10),()=>genHeEn([...W_UNIT,...W_ADJ],10),()=>sample(UNIT_HARD,10)]},
- {id:"food",group:"א. אוצר מילים",icon:"🍎",title:"אוכל ומילים מהחוברת",desc:"חוברת עמ' 8, 9, 16, 17",
-  levels:[()=>shuffle([...genEmoji(5),...genEnHe([...W_FOOD,...W_BOOKLET],5)]),()=>genHeEn([...W_FOOD,...W_BOOKLET],10),()=>sample(FOOD_HARD,10)]},
+ {id:"food",group:"א. אוצר מילים",icon:"🍎",title:"אוכל",desc:"חוברת עמ' 16–17",
+  levels:[()=>shuffle([...genEmoji(5),...genEnHe(W_FOOD,7)]),()=>genHeEn(W_FOOD,12),()=>shuffle([...FOOD_HARD.slice(0,8),...genHeEn(W_FOOD,2)])]},
+ {id:"sounds",group:"א. אוצר מילים",icon:"🔤",title:"מילים מדפי הצלילים",desc:"חוברת עמ' 4–7 (long a/e/i/o) ו-8–9 (long u, soft g/c)",
+  levels:[()=>genEnHe([...W_SOUNDS,...W_BOOKLET],12),()=>genHeEn([...W_SOUNDS,...W_BOOKLET],12),()=>shuffle([...sample(SOUND_Q,8),...sample(FOOD_HARD.slice(8),4),...genEnHe([...W_SOUNDS,...W_BOOKLET],2)])]},
  {id:"nouns",group:"ב. דקדוק",icon:"🔢",title:"יחיד ורבים, a/an, the, some, this/these",desc:"קובץ ההסברים והתרגול, קובץ תרגול I",
   levels:[genNounEasy,()=>shuffle([...sample(NOUN_MID,7),...genPluralType(5)]),()=>sample(NOUN_HARD,10)]},
  {id:"be",group:"ב. דקדוק",icon:"🙋",title:"שמות גוף + to be",desc:"חיובי, שלילי, שאלות כן/לא ושאלות Wh",
