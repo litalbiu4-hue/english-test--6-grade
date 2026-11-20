@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מתכוננים למבחן באנגלית – כיתה ו'</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1ea; --card:#fffdf8; --ink:#1f2433; --muted:#6b6f7c; --line:#e3ddd0;
+  --brand:#2b59c3; --brand-soft:#e3ebfb; --ok:#1f8a4c; --ok-soft:#dff3e6;
+  --bad:#c0392b; --bad-soft:#fbe3df; --warn:#b7791f; --warn-soft:#fdf0d5;
+  --easy:#2f9e6b; --mid:#d98a1c; --hard:#c4453a; --radius:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Rubik",system-ui,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:18px;line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+.en{direction:ltr;unicode-bidi:isolate;font-family:"Rubik",system-ui,sans-serif}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+h1{font-size:28px;margin:0;font-weight:800;letter-spacing:-.3px}
+.sub{color:var(--muted);margin:4px 0 0;font-size:16px}
+.exam-chip{background:var(--ink);color:#fff;border-radius:999px;padding:8px 14px;font-weight:700;font-size:15px;white-space:nowrap}
+.howto{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;margin-bottom:18px;font-size:16px;color:#3b3f4c}
+.howto b{color:var(--ink)}
+.section-title{font-size:15px;font-weight:700;color:var(--muted);margin:22px 4px 10px;text-transform:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.topic{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:10px}
+.topic .t-head{display:flex;gap:10px;align-items:center}
+.topic .icon{font-size:28px;width:46px;height:46px;display:grid;place-items:center;background:var(--brand-soft);border-radius:12px;flex:none}
+.topic h3{margin:0;font-size:19px;line-height:1.25}
+.topic p{margin:0;color:var(--muted);font-size:14.5px}
+.levels{display:flex;gap:8px;margin-top:auto}
+.lvl{flex:1;border:0;border-radius:12px;padding:9px 4px 7px;font:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;transition:transform .08s}
+.lvl:active{transform:scale(.97)}
+.lvl.l0{background:var(--easy)} .lvl.l1{background:var(--mid)} .lvl.l2{background:var(--hard)}
+.lvl .stars{font-size:12px;letter-spacing:1px;opacity:.95;min-height:16px}
+.resetall{margin-top:26px;text-align:center}
+.linkbtn{background:none;border:0;color:var(--muted);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer}
+
+/* quiz */
+.qbar{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.back{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 14px;font:inherit;font-size:15px;cursor:pointer}
+.qtitle{font-weight:700;font-size:17px;flex:1}
+.badge{border-radius:999px;padding:3px 10px;color:#fff;font-size:13px;font-weight:700;margin-inline-start:6px}
+.badge.l0{background:var(--easy)} .badge.l1{background:var(--mid)} .badge.l2{background:var(--hard)}
+.progress{height:10px;background:#e7e1d3;border-radius:999px;overflow:hidden;margin-bottom:16px}
+.progress>div{height:100%;background:var(--brand);width:0;transition:width .3s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.qnum{color:var(--muted);font-size:14px;margin-bottom:6px}
+.qtext{font-size:21px;font-weight:500;margin-bottom:16px}
+.qtext .big{font-size:26px;font-weight:800}
+.hint{color:var(--muted);font-size:15px;margin:-8px 0 14px}
+.opts{display:grid;gap:10px}
+.opt{border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 16px;font:inherit;font-size:19px;cursor:pointer;text-align:start;transition:border-color .1s, background .1s}
+.opt:hover:not(:disabled){border-color:var(--brand)}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default}
+.opt.en-opt{direction:ltr;text-align:left}
+.speak{border:0;background:var(--brand-soft);border-radius:10px;padding:4px 10px;cursor:pointer;font-size:18px;vertical-align:middle;margin-inline-start:6px}
+input.ans,textarea.ans{width:100%;font:inherit;font-size:20px;padding:12px 14px;border:2px solid var(--line);border-radius:14px;background:#fff;direction:ltr;text-align:left}
+textarea.ans{min-height:120px;resize:vertical}
+input.ans:focus,textarea.ans:focus{outline:none;border-color:var(--brand)}
+.row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:11px 20px;font:inherit;font-size:17px;font-weight:700;cursor:pointer;background:var(--brand);color:#fff}
+.btn.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:default}
+.fb{margin-top:16px;border-radius:14px;padding:12px 16px;font-size:17px}
+.fb.ok{background:var(--ok-soft);color:#14532d}
+.fb.bad{background:var(--bad-soft);color:#7f1d1d}
+.fb.warn{background:var(--warn-soft);color:#713f12}
+.fb .model{margin-top:6px}
+.fb ul{margin:6px 0 0;padding-inline-start:20px}
+/* build */
+.zone{min-height:58px;border:2px dashed var(--line);border-radius:14px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;direction:ltr;background:#fff;align-items:center}
+.bank{display:flex;flex-wrap:wrap;gap:8px;direction:ltr;margin-top:12px}
+.tile{border:2px solid #cfd8ee;background:var(--brand-soft);border-radius:10px;padding:7px 12px;font:inherit;font-size:19px;cursor:pointer}
+.tile.used{visibility:hidden}
+.zone .tile{background:#fff}
+/* reading */
+.reading{background:#fbf8f1;border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:18px;direction:ltr;text-align:left;font-size:18px;line-height:1.65}
+.reading h4{margin:0 0 6px;font-size:20px}
+.reading .sec{font-weight:700;margin-top:10px}
+.reading p{margin:6px 0}
+.reading .s{border-radius:6px;padding:1px 2px}
+.reading.picking .s{cursor:pointer;background:#eef2fb;box-shadow:inset 0 -2px 0 #c9d6f3}
+.reading.picking .s:hover{background:#dbe5fb}
+.reading .s.ok{background:var(--ok-soft);box-shadow:inset 0 -2px 0 var(--ok)}
+.reading .s.bad{background:var(--bad-soft);box-shadow:inset 0 -2px 0 var(--bad)}
+details.rtoggle summary{cursor:pointer;color:var(--brand);font-weight:700;margin-bottom:8px}
+.tf{display:flex;gap:10px}
+.tf .opt{flex:1;text-align:center;direction:ltr}
+.step{font-weight:700;margin:16px 0 8px}
+/* summary */
+.sum{text-align:center}
+.sum .score{font-size:56px;font-weight:800;margin:6px 0}
+.sum .bigstars{font-size:40px;letter-spacing:6px}
+.mist{text-align:start;margin-top:18px}
+.mist h4{margin:0 0 8px}
+.mist li{margin-bottom:8px}
+.tag{display:inline-block;background:var(--brand-soft);border-radius:8px;padding:0 8px;font-size:14px;color:var(--brand)}
+@media (max-width:520px){
+  body{font-size:17px}
+  h1{font-size:23px}
+  .qtext{font-size:19px}
+  .card{padding:16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* =========================================================
+   עזרים
+   ========================================================= */
+const $ = (s, el=document) => el.querySelector(s);
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function sample(a,n){return shuffle(a).slice(0,n);}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function en(s){return `<span class="en">${s}</span>`;}
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.85;speechSynthesis.speak(u);}catch(e){}}
+const canSpeak = typeof window!=="undefined" && "speechSynthesis" in window;
+function spk(t){return canSpeak?`<button class="speak" title="השמע" onclick="speak(${esc(JSON.stringify(t))})">🔊</button>`:"";}
+
+/* שמירת התקדמות */
+const LS_KEY="eng6_progress_v1";
+function loadProg(){try{return JSON.parse(localStorage.getItem(LS_KEY))||{};}catch(e){return {};}}
+function saveProg(p){try{localStorage.setItem(LS_KEY,JSON.stringify(p));}catch(e){}}
+
+/* =========================================================
+   רשימות מילים
+   ========================================================= */
+const W_CLASS = [
+ ["below","למטה"],["complete","להשלים"],["dictionary","מילון"],["find out","לגלות"],
+ ["instructions","הוראות"],["opposite","הפך"],["raise","להרים"],["repeat","לחזור (על)"],
+ ["spell","לאיית"],["vocabulary","אוצר מילים"],["conversation","שיחה"],["correct","נכון"],
+ ["describe","לתאר"],["document","מסמך"],["example","דוגמה"],["first name","שם פרטי"],
+ ["folder","תיקייה"],["guess","לנחש"],["keyboard","מקלדת"],["quiz","בוחן, חידון"],
+ ["surname","שם משפחה"],["task","משימה"],["read","לקרוא"],["match","להתאים"],
+ ["listen","להקשיב"],["choose","לבחור"],["copy","להעתיק"],["write","לכתוב"]
+];
+const W_UNIT = [
+ ["afraid","פוחד, מפחד"],["glad","שמח"],["leave","לעזוב, להשאיר"],["order","להזמין"],["team","קבוצה"],
+ ["anything","כל דבר, שום דבר"],["hit","להכות"],["love","לאהוב"],["pick","לבחור"],["Dear ...","היקר ..."],
+ ["island","אי"],["million","מיליון"],["popular","פופולרי"],["about","בערך"],["famous","מפורסם"],
+ ["reason","סיבה"],["several","כמה, אחדים"],["thousand","אלף"],["clever","חכם"],["mountain","הר"],
+ ["return","לחזור"],["still","עדיין"],["decide","להחליט"],["nature","טבע"],["saw","ראה"],["the cold","הקור"]
+];
+const W_ADJ = [
+ ["beautiful","יפה"],["careful","זהיר"],["dirty","מלוכלך"],["funny","מצחיק"],["nice","נחמד"],
+ ["sad","עצוב"],["big","גדול"],["clean","נקי"],["fat","שמן"],["happy","שמח"],["quiet","שקט"],
+ ["strong","חזק"],["busy","עסוק"],["friendly","ידידותי"],["interesting","מעניין"],["quick","מהיר"],["thin","רזה"]
+];
+const W_FOOD = [
+ ["apple","תפוח"],["candy","ממתקים"],["chicken","עוף"],["chocolate cake","עוגת שוקולד"],["cola","קולה"],
+ ["cucumber","מלפפון"],["fruit salad","סלט פירות"],["hot dog","נקניקייה בלחמנייה"],["ice cream","גלידה"],
+ ["lemonade","לימונדה"],["meatballs","קציצות"],["orange","תפוז"],["pie","פשטידה"],["potato","תפוח אדמה"],
+ ["sausage","נקניקייה"],["toast","לחם קלוי"],["bread","לחם"],["carrot","גזר"],["cereal","דגני בוקר"],
+ ["cheese","גבינה"],["coffee","קפה"],["cookies","עוגיות"],["egg","ביצה"],["hamburger","המבורגר"],
+ ["juice","מיץ"],["lettuce","חסה"],["onion","בצל"],["peach","אפרסק"],["pepper","פלפל"],["plum","שזיף"],
+ ["tea","תה"],["tomato","עגבנייה"]
+];
+const W_BOOKLET = [
+ ["fruit","פרי"],["blue","כחול"],["June","יוני"],["glue","דבק"],["suit","חליפה"],["girl","ילדה"],
+ ["giraffe","ג'ירפה"],["cage","כלוב"],["gorilla","גורילה"],["pencil","עיפרון"],["cake","עוגה"],
+ ["mice","עכברים"],["rice","אורז"],["computer","מחשב"],["goat","עז"],["green","ירוק"],["page","עמוד"],
+ ["age","גיל"],["garden","גינה"],["face","פנים"],["cupboard","ארון"],["pain","כאב"],["leg","רגל"]
+];
+
+/* מחולל שאלות אוצר מילים */
+function genEnHe(list,n){
+  return sample(list,n).map(([e,h])=>{
+    const wrong=sample(list.filter(x=>x[0]!==e&&x[1]!==h),3).map(x=>x[1]);
+    return {t:"mc",q:`מה הפירוש של ${en(`<span class="big">${esc(e)}</span>`)}? ${spk(e)}`,o:[h,...wrong],ans:`${e} = ${h}`};
+  });
+}
+function genHeEn(list,n){
+  return sample(list,n).map(([e,h])=>{
+    const wrong=sample(list.filter(x=>x[0]!==e&&x[1]!==h),3).map(x=>x[0]);
+    return {t:"mc",q:`איך אומרים באנגלית: <span class="big">${esc(h)}</span>?`,o:[e,...wrong],enOpts:true,ans:`${h} = ${e}`};
+  });
+}
+const mcEn = (q,o,ex) => ({t:"mc",q,o,enOpts:true,ex});
+
+/* =========================================================
+   1. מילות הוראה בכיתה
+   ========================================================= */
+const CLASS_SENT = [
+ ["Complete the sentences.","השלימו את המשפטים.",["האזינו למשפטים.","העתיקו את המשפטים.","קראו את המשפטים."]],
+ ["Use the words below.","השתמשו במילים שלמטה.",["כתבו את המילים במילון.","חזרו על המילים.","בחרו מילה אחת."]],
+ ["Spell your name.","אייתו את שמכם.",["כתבו את שם המשפחה.","אמרו שלום.","חזרו על השם."]],
+ ["Read the instructions.","קראו את ההוראות.",["כתבו את ההוראות.","קראו את הדוגמה.","הקשיבו לשיחה."]],
+ ["Listen and repeat the words.","האזינו וחזרו על המילים.",["האזינו ואייתו את המילים.","קראו והעתיקו את המילים.","האזינו ונחשו את המילים."]],
+ ["Raise your hands to answer the question.","הרימו יד כדי לענות על השאלה.",["הורידו את היד.","כתבו תשובה לשאלה.","שאלו שאלה את המורה."]],
+ ["Match the opposites.","התאימו את ההפכים.",["מצאו דוגמאות.","השלימו את המשימות.","תארו את התמונה."]],
+ ["Complete all the tasks in the quiz.","השלימו את כל המשימות בבוחן.",["קראו את כל ההוראות בבוחן.","בחרו שלוש משימות.","הכינו בוחן לחבר."]],
+ ["Put the documents in the folder.","שימו את המסמכים בתיקייה.",["פתחו מסמך חדש.","הוציאו את המסמכים מהתיקייה.","כתבו את המסמך במחשב."]],
+ ["Choose three correct answers.","בחרו שלוש תשובות נכונות.",["כתבו שלוש תשובות.","בחרו תשובה לא נכונה.","מצאו שלוש דוגמאות."]],
+ ["Listen to the conversation.","האזינו לשיחה.",["קראו את השיחה.","כתבו שיחה.","תארו את השיחה."]],
+ ["Find examples from the text.","מצאו דוגמאות מהטקסט.",["העתיקו את הטקסט.","קראו את הדוגמה למטה.","תארו את הטקסט."]],
+ ["Guess which sentence is not true.","נחשו איזה משפט לא נכון.",["בחרו את המשפט הנכון.","השלימו את המשפט.","העתיקו את המשפט הנכון."]],
+ ["Find the new vocabulary in your dictionaries.","מצאו את המילים החדשות במילונים שלכם.",["כתבו מילון חדש.","חזרו על המילים החדשות.","אייתו את המילים במילון."]],
+ ["Describe the picture.","תארו את התמונה.",["העתיקו את התמונה.","הסתכלו על התמונה.","בחרו תמונה."]],
+ ["Look at the example below.","הסתכלו על הדוגמה שלמטה.",["כתבו דוגמה למטה.","מצאו דוגמה בטקסט.","קראו את ההוראות למעלה."]],
+];
+function genClassSent(n){
+  return sample(CLASS_SENT,n).map(([e,h,w])=>({t:"mc",q:`מה פירוש ההוראה? ${spk(e)}<br>${en(`<b>${e}</b>`)}`,o:[h,...w],ans:`${e} = ${h}`}));
+}
+const CLASS_HARD = [
+ mcEn(`Please ___ your hand to answer the question.`,["raise","spell","repeat","guess"]),
+ mcEn(`Look up the new words in the ___.`,["dictionary","keyboard","folder","conversation"]),
+ mcEn(`Can you ___ your name? D-A-N.`,["spell","raise","describe","find out"]),
+ mcEn(`Listen and ___ after me.`,["repeat","complete","raise","guess"]),
+ mcEn(`Read the ___ before you start the task.`,["instructions","keyboard","surname","folder"]),
+ mcEn(`"Big" is the ___ of "small".`,["opposite","example","quiz","task"]),
+ mcEn(`Please put your work in your ___.`,["folder","keyboard","conversation","vocabulary"]),
+ mcEn(`Find the letter A on the ___.`,["keyboard","folder","document","quiz"]),
+ mcEn(`My first name is Dan. My ___ is Cohen.`,["surname","example","task","document"]),
+ mcEn(`I don't know the answer. Can I ___?`,["guess","raise","spell","order"]),
+ mcEn(`You need to study for the ___ on Sunday.`,["quiz","keyboard","folder","opposite"]),
+ mcEn(`Choose the ___ answer: a, b or c.`,["correct","below","popular","afraid"]),
+ mcEn(`___ the picture. What can you see?`,["Describe","Spell","Raise","Repeat"]),
+ mcEn(`Open a new ___ on the computer.`,["document","dictionary","conversation","surname"]),
+ mcEn(`___ the sentences with words from the box.`,["Complete","Raise","Guess","Spell"]),
+ mcEn(`Please ___ what time the shop opens.`,["find out","repeat","raise","spell"]),
+ mcEn(`Learn the new ___ for the test.`,["vocabulary","keyboard","folder","surname"]),
+ mcEn(`Don't listen to my ___ with my friend!`,["conversation","keyboard","dictionary","example"]),
+ mcEn(`Write your answers in the table ___.`,["below","opposite","correct","about"]),
+ mcEn(`Complete all the ___ in the quiz.`,["tasks","keyboards","surnames","folders"]),
+ {t:"mc",q:`מה פירוש הצירוף ${en("<b>raise your hand</b>")}?`,o:["להרים את היד","להוריד את היד","לכתוב ביד","לנחש"]},
+ {t:"mc",q:`מה פירוש המילה ${en("<b>below</b>")} במשפט ${en("Use the words below.")}?`,o:["למטה","למעלה","בצד","אחרי"]},
+ {t:"mc",q:`${en("<b>find out</b>")} – מה המשמעות?`,o:["ללמוד / לגלות משהו חדש","לתרגל משהו","לחפש משהו שאבד","לצאת החוצה"]},
+];
+
+/* =========================================================
+   2. מילים מיחידה 1 + שמות תואר
+   ========================================================= */
+const UNIT_HARD = [
+ mcEn(`Snow monkeys live in the snowy ___.`,["mountains","islands","teams","reasons"]),
+ mcEn(`I'm ___ you are coming to visit me! I can't wait.`,["glad","afraid","dirty","quiet"]),
+ mcEn(`My little sister is ___ of dogs. She cries when she sees one.`,["afraid","glad","famous","popular"]),
+ mcEn(`Japan is a group of ___ in Asia.`,["islands","mountains","teams","thousands"]),
+ mcEn(`More than 126 ___ people live in Japan.`,["million","reason","several","team"]),
+ mcEn(`Pizza is very ___. Everybody loves it.`,["popular","afraid","quiet","dirty"]),
+ mcEn(`Monkeys are ___ animals. They can learn new things.`,["clever","sad","dirty","thin"]),
+ mcEn(`There are about one hundred ___ (100,000) snow monkeys in Japan.`,["thousand","million","several","about"]),
+ mcEn(`That's the ___ they are called snow monkeys.`,["reason","nature","team","island"]),
+ mcEn(`Today, the snow monkeys ___ go to the hot pools.`,["still","about","several","anything"]),
+ mcEn(`I want to ___ a pizza and a cola, please.`,["order","hit","leave","return"]),
+ mcEn(`I'm not hungry. I don't want ___.`,["anything","several","million","about"]),
+ mcEn(`Don't ___ your brother! It's not nice.`,["hit","pick","order","love"]),
+ mcEn(`___ a card from the box. Any card!`,["Pick","Hit","Leave","Return"]),
+ mcEn(`We ___ home at 7:30 every morning and go to school.`,["leave","decide","order","pick"]),
+ mcEn(`My basketball ___ is the best!`,["team","reason","nature","island"]),
+ mcEn(`The monkeys ___ to copy the people.`,["decided","ordered","hit","left"]),
+ mcEn(`Yesterday I ___ a snow monkey at the zoo.`,["saw","return","leave","decide"]),
+ mcEn(`I love ___: trees, flowers, birds and rivers.`,["nature","team","reason","million"]),
+ mcEn(`The hotel is ___ ten minutes from the sea.`,["about","still","several","anything"]),
+ mcEn(`___ Lisa, How are you?`,["Dear","Glad","Famous","Several"]),
+ mcEn(`___ snow monkeys sleep together to keep warm.`,["Several","Anything","About","Still"]),
+ mcEn(`The monkeys ___ to the hot pools again and again.`,["return","order","hit","pick"]),
+ mcEn(`Snow monkeys can live in ___.`,["the cold","the reason","the team","anything"]),
+ {t:"mc",q:`מה ההפך של ${en("<b>clean</b>")}?`,o:[en("dirty"),en("quiet"),en("busy"),en("nice")]},
+ {t:"mc",q:`מה ההפך של ${en("<b>happy</b>")}?`,o:[en("sad"),en("funny"),en("glad"),en("friendly")]},
+ {t:"mc",q:`מה ההפך של ${en("<b>fat</b>")}?`,o:[en("thin"),en("strong"),en("big"),en("quick")]},
+ {t:"mc",q:`איזו מילה מתארת מישהו שעושה הרבה דברים ואין לו זמן?`,o:[en("busy"),en("quiet"),en("careful"),en("funny")]},
+ {t:"mc",q:`איזו מילה מתארת מישהו שמשמח אותנו וגורם לנו לצחוק?`,o:[en("funny"),en("careful"),en("strong"),en("thin")]},
+];
+
+/* =========================================================
+   3. אוכל ומילים מהחוברת
+   ========================================================= */
+const FOOD_EMOJI = [["🍎","apple"],["🥕","carrot"],["🍅","tomato"],["🧅","onion"],["🥒","cucumber"],["🍞","bread"],
+ ["🧀","cheese"],["🥚","egg"],["🍔","hamburger"],["🌭","hot dog"],["🍦","ice cream"],["🍪","cookies"],["🍑","peach"],
+ ["🍊","orange"],["☕","coffee"],["🍬","candy"],["🥔","potato"],["🍗","chicken"],["🥬","lettuce"],["🫑","pepper"],["🍋","lemonade"]];
+function genEmoji(n){
+  const all=FOOD_EMOJI.map(x=>x[1]);
+  return sample(FOOD_EMOJI,n).map(([e,w])=>({t:"mc",q:`מה יש בתמונה? <span style="font-size:54px;display:block;line-height:1.2">${e}</span>`,o:[w,...sample(all.filter(x=>x!==w),3)],enOpts:true}));
+}
+const FOOD_HARD = [
+ mcEn(`Which one is a drink?`,["lemonade","cucumber","toast","sausage"]),
+ mcEn(`Which one is a vegetable?`,["cucumber","cookies","pie","cola"]),
+ mcEn(`Which one is a fruit?`,["plum","onion","cheese","cereal"]),
+ mcEn(`I eat ___ with milk in the morning.`,["cereal","meatballs","sausage","onion"]),
+ mcEn(`Mom puts ___ and tomato in the salad.`,["lettuce","candy","coffee","cookies"]),
+ mcEn(`A hot dog is a ___ in bread.`,["sausage","peach","cucumber","pie"]),
+ mcEn(`I drink ___ with sugar every morning.`,["tea","toast","meatballs","potato"]),
+ mcEn(`My favorite dessert is ___ cake.`,["chocolate","onion","pepper","chicken"]),
+ mcEn(`Which word has a soft g (like in "page")?`,["giraffe","goat","green","girl"]),
+ mcEn(`Which word has a soft c (like in "ice")?`,["rice","cat","carrot","cake"]),
+ mcEn(`Which word has a soft c?`,["face","cap","cupboard","candy"]),
+ mcEn(`Which word has a long u sound (like in "June")?`,["blue","gun","but","luck"]),
+ mcEn(`"Mice" is the plural of ___.`,["mouse","mices","mise","mous"]),
+ mcEn(`Help! My leg! Oh, the ___!`,["pain","page","cage","glue"]),
+ mcEn(`The bird is in the ___.`,["cage","glue","suit","rug"]),
+ mcEn(`Write with a ___.`,["pencil","pepper","peach","plum"]),
+];
+
+/* =========================================================
+   4. שמות עצם: יחיד/רבים, a/an, the, some, this/that/these/those
+   ========================================================= */
+const PLURALS = [["book","books","bookes","bookies"],["box","boxes","boxs","boxies"],["baby","babies","babys","babyes"],
+ ["child","children","childs","childrens"],["man","men","mans","mens"],["woman","women","womans","womens"],
+ ["mouse","mice","mouses","mices"],["foot","feet","foots","feets"],["tooth","teeth","tooths","teeths"],
+ ["bus","buses","buss","busies"],["toy","toys","toies","toyes"],["city","cities","citys","cityes"],
+ ["tomato","tomatoes","tomatos","tomatoe"],["potato","potatoes","potatos","potatoe"],["sheep","sheep","sheeps","sheepes"],
+ ["person","people","peoples","persones"],["knife","knives","knifes","knive"],["leaf","leaves","leafs","leafes"],
+ ["monkey","monkeys","monkies","monkeyes"],["dictionary","dictionaries","dictionarys","dictionaryes"],
+ ["watch","watches","watchs","watchies"],["glass","glasses","glasss","glassies"]];
+const A_AN = [["apple","an"],["orange","an"],["egg","an"],["island","an"],["dictionary","a"],["banana","a"],
+ ["ice cream","an"],["onion","an"],["keyboard","a"],["umbrella","an"],["monkey","a"],["elephant","an"],["hot dog","a"],["example","an"],["folder","a"]];
+const PL_RULES = [
+ ["dress","-es"],["bus","-es"],["brush","-es"],["watch","-es"],["box","-es"],["fox","-es"],["sandwich","-es"],["bench","-es"],["tomato","-es"],["potato","-es"],
+ ["dog","-s"],["flower","-s"],["present","-s"],["house","-s"],["picture","-s"],["computer","-s"],["window","-s"],["day","-s"],["boy","-s"],["toy","-s"],["radio","-s"],["photo","-s"],["piano","-s"],["roof","-s"],["giraffe","-s"],["umbrella","-s"],
+ ["party","-ies"],["baby","-ies"],["city","-ies"],["family","-ies"],["lady","-ies"],["dictionary","-ies"],
+ ["knife","-ves"],["shelf","-ves"],["wife","-ves"],["life","-ves"],["scarf","-ves"],["leaf","-ves"],
+ ["tooth","Irregular"],["child","Irregular"],["person","Irregular"],["mouse","Irregular"],["sheep","Irregular"],["fish","Irregular"],["man","Irregular"],["woman","Irregular"],["foot","Irregular"],["fisherman","Irregular"]
+];
+const RULE_EX = {"-s":"רוב המילים: פשוט מוסיפים s. גם מילים שמסתיימות ב-y אחרי תנועה (day, boy, toy), וגם radio, photo, piano, roof, giraffe.",
+ "-es":"מילים שמסתיימות ב- s, ss, sh, ch, x, o מקבלות es (dresses, benches, boxes, tomatoes).",
+ "-ies":"עיצור + y בסוף: מוחקים את ה-y ומוסיפים ies (baby → babies, lady → ladies).",
+ "-ves":"f או fe בסוף: הופכים ל-v ומוסיפים es (knife → knives, shelf → shelves).",
+ "Irregular":"\"המרדנים\" – צורה מיוחדת שצריך לזכור: tooth→teeth, child→children, person→people, mouse→mice, man→men, sheep→sheep, fish→fish."};
+function genRules(n){
+  return sample(PL_RULES,n).map(([w,r])=>({t:"mc",q:`איך הופכים לרבים את ${en(`<b>${w}</b>`)}?`,o:[r,...["-s","-es","-ies","-ves","Irregular"].filter(x=>x!==r)],enOpts:true,keepOrder:true,ex:RULE_EX[r]}));
+}
+function genNounEasy(){
+  const p=sample(PLURALS,6).map(([s,...o])=>({t:"mc",q:`מה צורת הרבים של ${en(`<b>${s}</b>`)}?`,o,enOpts:true,ans:`${s} → ${o[0]}`}));
+  const a=sample(A_AN,4).map(([w,c])=>({t:"mc",q:`השלם: ${en(`___ ${w}`)}`,o:[c,c==="a"?"an":"a"],enOpts:true,
+    ex:c==="an"?"לפני מילה שמתחילה בצליל של תנועה (a, e, i, o, u) כותבים an.":"לפני מילה שמתחילה בצליל של עיצור כותבים a."}));
+  return shuffle([...p,...a,...genRules(4)]);
+}
+const NOUN_MID = [
+ mcEn(`She is ___ English teacher.`,["an","a","the","some"],"English מתחילה בתנועה – an."),
+ mcEn(`I need ___ new bag. ___ bag I have is very old.`,["a … The","the … A","an … The","some … A"],"פעם ראשונה – a. אחר כך כבר יודעים על איזה תיק מדובר – The."),
+ mcEn(`Can I have ___ more sugar in my tea, please?`,["some","a","an","these"]),
+ mcEn(`I'm making popcorn. I need ___ oil and ___ salt.`,["some … some","a … a","an … a","the … an"]),
+ mcEn(`Do you see ___ tall man under the tree? He is ___ teacher in my school.`,["the … a","a … the","an … a","some … a"]),
+ mcEn(`We live in ___ same building.`,["the","a","an","some"],"the same – תמיד עם the."),
+ mcEn(`I saw ___ amazing shirt at the mall.`,["an","a","some","these"],"amazing מתחילה בתנועה – an. (סימן היחיד נקבע לפי המילה שאחריו, גם אם היא שם תואר.)"),
+ mcEn(`It's ___ big apple.`,["a","an"],"big מתחילה בעיצור – a, למרות ש-apple מתחילה בתנועה."),
+ mcEn(`It's ___ open window.`,["an","a"],"open מתחילה בתנועה – an."),
+ mcEn(`Wait ___ hour, please.`,["an","a"],"ב-hour לא שומעים את ה-h, הצליל הראשון הוא תנועה – an hour."),
+ mcEn(`She studies at ___ university.`,["a","an"],"university מתחילה בצליל \"יו\" – a university."),
+ mcEn(`___ Dan is my friend.`,["(no word)","The","A","An"],"לפני שם של אדם/מקום לא שמים a/an/the."),
+ mcEn(`Look at ___ bird over there in the tree!`,["that","this","these","those"],"רחוק + יחיד = that"),
+ mcEn(`___ are my shoes, here under my chair.`,["These","Those","This","That"],"קרוב + רבים = these"),
+ mcEn(`___ books over there on the shelf are new.`,["Those","These","This","That"],"רחוק + רבים = those"),
+ mcEn(`___ is my pencil. It's here in my hand.`,["This","These","Those","They"],"קרוב + יחיד = this"),
+ mcEn(`I have ___ apples in my bag.`,["some","a","an","this"],"some בא לפני רבים (כמה, קצת)."),
+ mcEn(`Can I have ___ water, please?`,["some","a","an","these"]),
+ mcEn(`___ sun is very hot today.`,["The","A","An","Some"],"יש רק שמש אחת, לכן the."),
+ mcEn(`I have a dog. ___ dog is black.`,["The","A","An","Those"],"כשמדברים שוב על משהו שכבר הוזכר – the."),
+ mcEn(`It is ___ uniform.`,["a","an"],"uniform מתחילה בצליל \"יו\" – לכן a."),
+ mcEn(`These ___ are red.`,["flowers","flower","a flower","an flower"]),
+ mcEn(`This ___ is big.`,["box","boxes","a boxes","some box"]),
+ mcEn(`Those ___ are from Japan.`,["monkeys","monkey","monkies","a monkey"]),
+ mcEn(`Choose the correct sentence:`,["These are my friends.","This are my friends.","These is my friends.","This is my friends."]),
+ mcEn(`Choose the correct sentence:`,["Those children are happy.","Those childs are happy.","That children are happy.","Those children is happy."]),
+ mcEn(`Choose the correct sentence:`,["That woman is a teacher.","That women is a teacher.","Those woman is a teacher.","That woman are a teacher."]),
+ mcEn(`Choose the correct sentence:`,["The babies are in the kitchen.","The babys are in the kitchen.","The babies is in the kitchen.","A babies are in the kitchen."]),
+];
+const PLURAL_TYPE = [
+ ["The ___ are small. (baby)","babies"],["There are five ___ in this park. (bench)","benches"],["Look at those red ___. (dress)","dresses"],
+ ["The house has three ___. (window)","windows"],["There are two ___ in the room. (lady)","ladies"],["Look at the big ___. (umbrella)","umbrella","כאן אין מספר או these – \"the big\" לפני מילה ביחיד. שימו לב לפועל look at the big umbrella (מטרייה אחת)."],
+ ["We have four ___. (orange)","oranges"],["I see six ___ in the water. (fish)","fish","fish ברבים נשאר fish."],["Put the books on the ___. (shelf)","shelves"],
+ ["There are many ___ in Tel Aviv. (party)","parties"],["Wash your ___! (foot)","feet"],["Brush your ___. (tooth)","teeth"],["The ___ are on the table. (knife)","knives"],
+ ["Three ___ are in the boat. (fisherman)","fishermen"],["I have two ___. (box)","boxes"],["The ___ are in the garden. (child)","children"],["There are many ___ in the city. (person)","people"],
+ ["My grandma has ten ___ (sheep).","sheep"],["We eat ___ for lunch. (sandwich)","sandwiches"],["Give me some ___. (tomato)","tomatoes"]
+];
+function genPluralType(n){return sample(PLURAL_TYPE,n).map(([q,a,ex])=>({t:"type",q:`השלם בצורה הנכונה: ${en("<b>"+esc(q)+"</b>")}`,a:[a],ex:ex||null}));}
+const PL_TIP="כשהופכים משפט לרבים משנים <b>הכול</b>: a/an נעלם, is→are, this→these, that→those, there is→there are, והשם עצמו לרבים.";
+const PL_TIP2="כשהופכים משפט ליחיד: are→is, these→this, those→that, מוסיפים a/an, והשם ליחיד.";
+const NOUN_HARD = [
+ {t:"type",q:`הפוך לרבים: ${en("<b>The new dress is in the box.</b>")}`,a:["The new dresses are in the boxes.","The new dresses are in the box."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>There is a fisherman in that boat.</b>")}`,a:["There are fishermen in those boats.","There are fishermen in that boat.","There are some fishermen in those boats.","There are some fishermen in that boat."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>This match is for that candle.</b>")}`,a:["These matches are for those candles."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>There is a red roof in the city.</b>")}`,a:["There are red roofs in the city.","There are red roofs in the cities.","There are some red roofs in the city."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>There is a strange person on that bench.</b>")}`,a:["There are strange people on those benches.","There are strange people on that bench.","There are some strange people on those benches."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>She has a new shelf for this toy.</b>")}`,a:["She has new shelves for these toys.","She has some new shelves for these toys."],form:true,ex:PL_TIP+" שימו לב: she has נשאר has – כי she עדיין אחת."},
+ {t:"type",q:`הפוך לרבים: ${en("<b>There is a lady in the palace.</b>")}`,a:["There are ladies in the palace.","There are some ladies in the palace.","There are ladies in the palaces."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>That knife is sharp.</b>")}`,a:["Those knives are sharp."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך ליחיד: ${en("<b>There are many new glasses in our kitchen.</b>")}`,a:["There is a new glass in our kitchen."],form:true,ex:PL_TIP2+" many נעלם ובמקומו a."},
+ {t:"type",q:`הפוך ליחיד: ${en("<b>These parties are fun.</b>")}`,a:["This party is fun."],form:true,ex:PL_TIP2},
+
+ {t:"type",q:`הפוך לרבים: ${en("<b>This is a book.</b>")}`,a:["These are books."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>This is an apple.</b>")}`,a:["These are apples."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>That is a monkey.</b>")}`,a:["Those are monkeys."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>The child is happy.</b>")}`,a:["The children are happy."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>This box is heavy.</b>")}`,a:["These boxes are heavy."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>That woman is a teacher.</b>")}`,a:["Those women are teachers."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך לרבים: ${en("<b>The man is in the kitchen.</b>")}`,a:["The men are in the kitchen."],form:true,ex:PL_TIP},
+ {t:"type",q:`הפוך ליחיד: ${en("<b>These mice are small.</b>")}`,a:["This mouse is small."],form:true,ex:PL_TIP2},
+ {t:"type",q:`הפוך ליחיד: ${en("<b>Those are my dictionaries.</b>")}`,a:["That is my dictionary."],form:true,ex:PL_TIP2},
+ {t:"type",q:`הפוך ליחיד: ${en("<b>The babies are hungry.</b>")}`,a:["The baby is hungry."],form:true,ex:PL_TIP2},
+ {t:"type",q:`הפוך ליחיד: ${en("<b>These are oranges.</b>")}`,a:["This is an orange."],form:true,ex:PL_TIP2},
+ {t:"type",q:`הפוך ליחיד: ${en("<b>They are clever children.</b>")}`,a:["He is a clever child.","She is a clever child."],form:true,ex:PL_TIP2},
+ {t:"type",q:`הפוך ליחיד: ${en("<b>The cities are beautiful.</b>")}`,a:["The city is beautiful."],form:true,ex:PL_TIP2},
+];
+
+/* =========================================================
+   5. שמות גוף + to be
+   ========================================================= */
+const BE_EASY = [
+ mcEn(`I ___ a student.`,["am","is","are"]),mcEn(`She ___ my sister.`,["is","am","are"]),
+ mcEn(`They ___ in the park.`,["are","is","am"]),mcEn(`We ___ good friends.`,["are","is","am"]),
+ mcEn(`It ___ a big dog.`,["is","are","am"]),mcEn(`You ___ very clever!`,["are","is","am"]),
+ mcEn(`Dan ___ eleven years old.`,["is","are","am"]),mcEn(`Dan and Maya ___ at school.`,["are","is","am"]),
+ mcEn(`The monkeys ___ in the hot pool.`,["are","is","am"]),mcEn(`My mom ___ a teacher.`,["is","are","am"]),
+ mcEn(`Dan → ___`,["He","She","It","They"]),mcEn(`Maya → ___`,["She","He","It","We"]),
+ mcEn(`the cat → ___`,["It","He","They","We"]),mcEn(`Dan and Maya → ___`,["They","We","He","You"]),
+ mcEn(`Dan and I → ___`,["We","They","I","You"]),mcEn(`the books → ___`,["They","It","We","She"]),
+ mcEn(`my father → ___`,["He","She","It","They"]),mcEn(`Japan → ___`,["It","She","They","He"]),
+];
+const BE_MID = [
+ mcEn(`When do you get up in the morning?`,["At 7 o'clock.","By car.","Under the bed.","Because I'm tired."]),
+ mcEn(`How do you go to the beach?`,["By car.","At 7 o'clock.","57 shekels.","Yes, I do."]),
+ mcEn(`Where is the ball?`,["Under the bed.","At 7 o'clock.","By car.","57 shekels."]),
+ mcEn(`How much does the ball cost?`,["57 shekels.","Under the bed.","By car.","At 7 o'clock."]),
+ mcEn(`Why are you sad?`,["Because I have no friends.","At 7 o'clock.","Under the bed.","By car."]),
+ mcEn(`Choose the negative of: "She is tall."`,["She isn't tall.","She not tall.","She aren't tall.","She don't tall."]),
+ mcEn(`I ___ hungry. (negative)`,["am not","isn't","aren't","not"]),
+ mcEn(`They ___ at home. They are at school.`,["aren't","isn't","am not","not"]),
+ mcEn(`The cat ___ black. It is white.`,["isn't","aren't","am not","not"]),
+ mcEn(`Choose the correct question:`,["Are you eleven?","You are eleven?","Is you eleven?","Am you eleven?"]),
+ mcEn(`___ he your brother?`,["Is","Are","Am","Does"]),
+ mcEn(`___ the monkeys clever?`,["Are","Is","Am","Do"]),
+ mcEn(`Is Lisa tall? – ___`,["Yes, she is.","Yes, she are.","Yes, she tall.","Yes, he is."]),
+ mcEn(`Are you afraid of dogs? – ___`,["No, I'm not.","No, I isn't.","No, I aren't.","No, you aren't."]),
+ mcEn(`Are they from Japan? – ___`,["Yes, they are.","Yes, they is.","Yes, them are.","Yes, they're."],"בתשובה קצרה חיובית לא מקצרים: Yes, they are."),
+ mcEn(`Where ___ the books?`,["are","is","am"]),mcEn(`What ___ your name?`,["is","are","am"]),
+ mcEn(`How old ___ you?`,["are","is","am"]),mcEn(`Who ___ your English teacher?`,["is","are","am"]),
+ mcEn(`___ is your birthday? – In March.`,["When","Where","Who","What"]),
+ mcEn(`___ are you? – I'm in the classroom.`,["Where","Who","What","How old"]),
+ mcEn(`___ is he? – He is my brother, Tom.`,["Who","Where","What","When"]),
+ mcEn(`___ old are you? – I'm eleven.`,["How","What","Who","Where"]),
+];
+const BE_HARD = [
+ {t:"type",q:`כתוב בשלילה: ${en("<b>He is happy.</b>")}`,a:["He isn't happy.","He is not happy."],form:true},
+ {t:"type",q:`כתוב בשלילה: ${en("<b>We are at home.</b>")}`,a:["We aren't at home.","We are not at home."],form:true},
+ {t:"type",q:`כתוב בשלילה: ${en("<b>I am tired.</b>")}`,a:["I'm not tired.","I am not tired."],form:true},
+ {t:"type",q:`כתוב בשלילה: ${en("<b>The monkeys are afraid.</b>")}`,a:["The monkeys aren't afraid.","The monkeys are not afraid."],form:true},
+ {t:"type",q:`הפוך לשאלה: ${en("<b>They are at school.</b>")}`,a:["Are they at school?"],form:true},
+ {t:"type",q:`הפוך לשאלה: ${en("<b>She is your sister.</b>")}`,a:["Is she your sister?"],form:true},
+ {t:"type",q:`הפוך לשאלה: ${en("<b>The dog is in the garden.</b>")}`,a:["Is the dog in the garden?"],form:true},
+ {t:"type",q:`הפוך לשאלה: ${en("<b>You are from Israel.</b>")}`,a:["Are you from Israel?"],form:true},
+ {t:"type",q:`ענה תשובה קצרה (כן): ${en("<b>Is Haruki from Japan?</b>")}`,a:["Yes, she is.","Yes, he is."],form:true},
+ {t:"type",q:`ענה תשובה קצרה (לא): ${en("<b>Are the books on the table?</b>")}`,a:["No, they aren't.","No, they are not."],form:true},
+ {t:"build",q:"סדר לשאלה: איפה קופי השלג?",a:"Where are the snow monkeys?"},
+ {t:"build",q:"סדר לשאלה: בן כמה אח שלך?",a:"How old is your brother?"},
+ {t:"build",q:"סדר לשאלה: מה שם המשפחה שלך?",a:"What is your surname?"},
+ {t:"build",q:"סדר לשאלה: מי המורה שלך לאנגלית?",a:"Who is your English teacher?"},
+];
+
+/* =========================================================
+   6. to have
+   ========================================================= */
+const HAVE_EASY = [
+ mcEn(`I ___ a cat.`,["have","has"]),mcEn(`She ___ long hair.`,["has","have"]),mcEn(`We ___ a big car.`,["have","has"]),
+ mcEn(`Dan ___ a new bike.`,["has","have"]),mcEn(`The dog ___ a toy.`,["has","have"]),mcEn(`They ___ blue eyes.`,["have","has"]),
+ mcEn(`It ___ a long tail.`,["has","have"]),mcEn(`You ___ a nice room.`,["have","has"]),mcEn(`My parents ___ a garden.`,["have","has"]),
+ mcEn(`Lisa ___ brown eyes.`,["has","have"]),mcEn(`He ___ two sisters.`,["has","have"]),mcEn(`Snow monkeys ___ pink faces.`,["have","has"]),
+];
+const HAVE_MID = [
+ mcEn(`She ___ tall and she ___ black hair.`,["is … has","has … is","is … is","has … has"]),
+ mcEn(`I ___ eleven and I ___ a brother.`,["am … have","have … am","am … has","is … have"]),
+ mcEn(`The monkeys ___ pink faces and they ___ brown and gray.`,["have … are","are … have","has … is","have … is"]),
+ mcEn(`Choose the correct sentence:`,["He has a dog.","He have a dog.","He is has a dog.","He haves a dog."]),
+ mcEn(`Choose the correct sentence:`,["My friends have a ball.","My friends has a ball.","My friends is have a ball.","My friend have a ball."]),
+ mcEn(`Japan ___ many islands.`,["has","have","is","are"]),
+ mcEn(`Haruki: "I ___ short. I ___ black hair."`,["am … have","have … am","is … has","am … has"]),
+ mcEn(`We ___ friends. We ___ the same teacher.`,["are … have","have … are","is … has","are … has"]),
+ mcEn(`My cat ___ white. It ___ green eyes.`,["is … has","has … is","are … have","is … have"]),
+ mcEn(`Choose the correct sentence:`,["Dan and I have a new teacher.","Dan and I has a new teacher.","Dan and I are a new teacher.","Dan and I is have a new teacher."]),
+];
+const HAVE_HARD = [
+ {t:"type",q:`תקן את הטעות: ${en("<b>He have a bike.</b>")}`,a:["He has a bike."],form:true},
+ {t:"type",q:`תקן את הטעות: ${en("<b>They has a cat.</b>")}`,a:["They have a cat."],form:true},
+ {t:"type",q:`תקן את הטעות: ${en("<b>I has two sisters.</b>")}`,a:["I have two sisters."],form:true},
+ {t:"type",q:`תקן את הטעות: ${en("<b>Maya have green eyes.</b>")}`,a:["Maya has green eyes."],form:true},
+ {t:"type",q:`תרגם: <b>יש לי כלב.</b>`,a:["I have a dog."],form:true},
+ {t:"type",q:`תרגם: <b>יש לה שיער חום.</b>`,a:["She has brown hair."],form:true},
+ {t:"type",q:`תרגם: <b>לקופים יש פנים ורודות.</b>`,a:["The monkeys have pink faces.","Monkeys have pink faces."],form:true},
+ {t:"type",q:`תרגם: <b>יש לנו מורה חדשה.</b>`,a:["We have a new teacher."],form:true},
+ {t:"type",q:`תרגם: <b>לדן יש אח ואחות.</b>`,a:["Dan has a brother and a sister."],form:true},
+ {t:"build",q:"סדר את המשפט: לחתול שלי יש עיניים ירוקות.",a:"My cat has green eyes.",extra:["have","is"]},
+];
+
+/* =========================================================
+   7. כתיבה ותרגום
+   ========================================================= */
+const WRITE_EASY = [
+ mcEn(`Which sentence is written correctly?`,["My name is Dan.","my name is Dan.","My name is dan.","My name is Dan"]),
+ mcEn(`Which sentence is written correctly?`,["I am from Israel.","i am from Israel.","I am from israel.","I am from Israel"]),
+ mcEn(`Which sentence is written correctly?`,["Where are you from?","Where are you from.","where are you from?","Where are you from"]),
+ mcEn(`Which sentence is written correctly?`,["Lisa and Haruki are friends.","lisa and Haruki are friends.","Lisa and haruki are friends.","Lisa and Haruki are friends"]),
+ mcEn(`Which sentence is written correctly?`,["We are in Japan.","We are in japan.","we are in Japan.","We are in Japan"]),
+ mcEn(`Which sentence is written correctly?`,["Is she your sister?","Is she your sister.","is she your sister?","Is She your sister?"]),
+ {t:"mc",q:"איך מתרגמים: <b>אני בן 11.</b>",o:["I am eleven years old.","I have eleven years old.","I eleven years old.","I is eleven years old."],enOpts:true},
+ {t:"mc",q:"איך מתרגמים: <b>יש לי שני אחים.</b>",o:["I have two brothers.","I am two brothers.","I has two brothers.","I have two brother."],enOpts:true},
+ {t:"mc",q:"איך מתרגמים: <b>היא לא שמחה.</b>",o:["She isn't happy.","She not happy.","She aren't happy.","She don't happy."],enOpts:true},
+ {t:"mc",q:"איך מתרגמים: <b>אלה הספרים שלי.</b>",o:["These are my books.","This is my books.","These is my books.","Those my books."],enOpts:true},
+ {t:"mc",q:"איך מתרגמים: <b>האם הם חברים?</b>",o:["Are they friends?","They are friends?","Is they friends?","Are them friends?"],enOpts:true},
+];
+const WRITE_MID = [
+ {t:"build",q:"אני בן אחת-עשרה.",a:"I am eleven years old.",extra:["have"]},
+ {t:"build",q:"יש לי אחות.",a:"I have a sister.",extra:["am"]},
+ {t:"build",q:"הכלב שלי לא גדול.",a:"My dog isn't big.",extra:["aren't"]},
+ {t:"build",q:"האם אתה מפחד מקופים?",a:"Are you afraid of monkeys?",extra:["Is"]},
+ {t:"build",q:"איפה הספרים שלי?",a:"Where are my books?",extra:["is"]},
+ {t:"build",q:"לחבר שלי יש אופניים חדשים.",a:"My friend has a new bike.",extra:["have"]},
+ {t:"build",q:"אלה החברים שלי.",a:"These are my friends.",extra:["This"]},
+ {t:"build",q:"קופי השלג חכמים.",a:"Snow monkeys are clever.",extra:["is"]},
+ {t:"build",q:"הרם את היד שלך.",a:"Raise your hand.",extra:["spell"]},
+ {t:"build",q:"מה שם המשפחה שלך?",a:"What is your surname?",extra:["are"]},
+ {t:"build",q:"הארי והחברים שלו נמצאים בפארק.",a:"Harry and his friends are in the park.",extra:["is"]},
+];
+const WRITE_HARD = [
+ {t:"type",q:"תרגם: <b>אני בן אחת-עשרה.</b>",a:["I am eleven years old.","I am eleven.","I am 11 years old.","I am 11."],form:true},
+ {t:"type",q:"תרגם: <b>יש לי אחות ושני אחים.</b>",a:["I have a sister and two brothers.","I have one sister and two brothers."],form:true},
+ {t:"type",q:"תרגם: <b>הכלב שלי גדול וחכם.</b>",a:["My dog is big and clever."],form:true},
+ {t:"type",q:"תרגם: <b>הם לא בבית הספר.</b>",a:["They are not at school.","They aren't at school.","They are not in school.","They aren't in school."],form:true},
+ {t:"type",q:"תרגם: <b>האם היא שמחה?</b>",a:["Is she happy?","Is she glad?"],form:true},
+ {t:"type",q:"תרגם: <b>איפה הספרים?</b>",a:["Where are the books?"],form:true},
+ {t:"type",q:"תרגם: <b>לחתול שלנו יש עיניים ירוקות.</b>",a:["Our cat has green eyes."],form:true},
+ {t:"type",q:"תרגם: <b>אלה תפוחים אדומים.</b>",a:["These are red apples.","Those are red apples."],form:true},
+ {t:"type",q:"תרגם: <b>הקופים לא מפחדים מהקור.</b>",a:["The monkeys are not afraid of the cold.","The monkeys aren't afraid of the cold."],form:true},
+ {t:"type",q:"תרגם: <b>חזרו על המילים.</b>",a:["Repeat the words."],form:true},
+ {t:"type",q:"תרגם: <b>השלימו את המשפטים.</b>",a:["Complete the sentences."],form:true},
+ {t:"type",q:"תרגם: <b>דן ואני חברים.</b>",a:["Dan and I are friends."],form:true},
+ {t:"type",q:"תרגם: <b>מה השם הפרטי שלך?</b>",a:["What is your first name?"],form:true},
+ {t:"type",q:"תרגם: <b>זה מילון.</b>",a:["This is a dictionary.","It is a dictionary.","That is a dictionary."],form:true},
+ {t:"type",q:"תרגם: <b>יפן מפורסמת.</b>",a:["Japan is famous."],form:true},
+ {t:"type",q:"תרגם: <b>יש לה חתול ושני כלבים.</b>",a:["She has a cat and two dogs."],form:true},
+];
+const FREE_WRITE = {t:"free",q:"כתוב לפחות 4 משפטים על חבר, בן משפחה או חיית מחמד. השתמש ב-<b>am / is / are</b> וגם ב-<b>have / has</b>.",
+ model:"This is my friend Noa. She is eleven years old. She is tall and funny. She has brown hair and green eyes. Noa has a dog. We are good friends."};
+
+/* =========================================================
+   8. הבנת הנקרא – טקסטים
+   ========================================================= */
+const TEXT1 = {title:"Meet Omer", paras:[
+ ["Hi! My name is Omer.","I'm eleven years old and I'm in Grade 6.","I'm from Haifa."],
+ ["I have a big family.","I have two sisters and a brother.","My sisters are Shira and Tamar.","They are nine years old.","My brother is a baby.","His name is Ido."],
+ ["We have a dog.","Her name is Lucky.","She is black and white and she is very friendly."],
+ ["My favorite food is pizza.","I love sports.","I'm on the school basketball team."]
+]};
+const TEXT2 = {title:"Email: My Trip to Eilat", paras:[
+ ["To: Maya | Subject: My trip to Eilat"],
+ ["Dear Maya,"],
+ ["I'm in Eilat with my family.","Eilat is a city in the south of Israel.","It's very hot here, but I'm not afraid of the sun.","I have a big hat!"],
+ ["Our hotel is near the sea.","Every morning we swim in the Red Sea.","The water is warm and clean.","There are thousands of beautiful fish in the sea.","They are red, yellow and blue."],
+ ["Today we are at the Underwater Observatory.","It is a famous place.","My brother Yoni is not happy.","He is afraid of the sharks!"],
+ ["We return home on Sunday.","I'm glad because I miss my cat, Mitzi."],
+ ["See you soon,","Noam"]
+]};
+const TEXT3 = {title:"NATURE 4 KIDS: Penguins", paras:[
+ {sec:"A  What are penguins?"},
+ ["Penguins are birds, but they can't fly.","They are black and white.","They have short legs and they walk slowly.","But in the water they are very quick.","Penguins are great swimmers!"],
+ ["There are about eighteen kinds of penguins in the world.","Many penguins live in Antarctica.","It is very cold there.","But not all penguins live in the cold.","Some penguins live on warm islands."],
+ {sec:"B  How do penguins keep warm?"},
+ ["Penguins have lots of feathers (נוצות) to keep them warm.","They also have a lot of fat.","In the winter, several thousand penguins stand together in a big group.","They take turns (מתחלפים) in the middle of the group, because it is the warmest place."],
+ {sec:"C  What do penguins eat?"},
+ ["Penguins eat fish.","They find their food in the sea.","Penguin parents are very careful.","They are never far from their babies.","The mother and the father take turns.","One parent finds food, and the other parent stays with the baby."]
+]};
+const READ1 = [
+ {t:"tfpick",s:"Omer is twelve years old.",a:false,pick:["I'm eleven years old and I'm in Grade 6."]},
+ mcEn("Where is Omer from?",["Haifa","Eilat","Tel Aviv","Japan"]),
+ mcEn("How many sisters does Omer have?",["two","one","three","nine"]),
+ {t:"tfpick",s:"Lucky is friendly.",a:true,pick:["She is black and white and she is very friendly."]},
+ mcEn("Who is Ido?",["Omer's baby brother","Omer's dog","Omer's friend","Omer's sister"]),
+ {t:"tfpick",s:"Shira and Tamar are older than Omer.",a:false,pick:["They are nine years old."]},
+ {t:"open",q:"What is Omer's favorite food?",keys:["pizza"],model:"Omer's favorite food is pizza."},
+ {t:"open",q:"Is Omer on a team? Which team?",keys:["yes","basketball"],model:"Yes, he is. He is on the school basketball team."},
+];
+const READ2 = [
+ mcEn("Who is writing the email?",["Noam","Maya","Yoni","Mitzi"]),
+ mcEn("Where is Noam?",["in Eilat","in Haifa","at home","in Japan"]),
+ {t:"tfpick",s:"The water in the sea is cold.",a:false,pick:["The water is warm and clean."]},
+ mcEn("What colors are the fish?",["red, yellow and blue","black and white","brown and gray","green and pink"]),
+ {t:"tfpick",s:"Noam is afraid of the sun.",a:false,pick:["It's very hot here, but I'm not afraid of the sun."]},
+ {t:"open",q:"Is Yoni happy? Why?",keys:["no","afraid|shark"],model:"No, he isn't. He is afraid of the sharks."},
+ {t:"open",q:"When does Noam return home?",keys:["sunday"],model:"Noam returns home on Sunday."},
+ {t:"open",q:"Why is Noam glad to return home?",keys:["cat|mitzi"],model:"Because he misses his cat, Mitzi. (\"I'm glad because I miss my cat, Mitzi.\")"},
+ mcEn("The Underwater Observatory is ...",["a famous place","a hotel","a city","a school"]),
+];
+const READ3 = [
+ {t:"tfpick",s:"Penguins can fly.",a:false,pick:["Penguins are birds, but they can't fly."]},
+ mcEn("What colors are penguins?",["black and white","brown and gray","red and yellow","blue and white"]),
+ {t:"open",q:"Are penguins quick on land? Why?",keys:["no","short legs|slowly|slow"],model:"No, they aren't. They have short legs and they walk slowly."},
+ {t:"tfpick",s:"All penguins live in the cold.",a:false,pick:["But not all penguins live in the cold.","Some penguins live on warm islands."]},
+ mcEn("Where do many penguins live?",["in Antarctica","on warm islands","in Japan","in the mountains"]),
+ {t:"open",q:"Give two things penguins have to keep warm.",keys:["feather","fat"],model:"Penguins have lots of feathers and a lot of fat."},
+ {t:"open",q:"Why do penguins take turns in the middle of the group?",keys:["warm"],model:"Because it is the warmest place."},
+ {t:"open",q:"Where do penguins find their food?",keys:["sea"],model:"They find their food in the sea."},
+ {t:"tfpick",s:"Penguin parents are careful.",a:true,pick:["Penguin parents are very careful.","They are never far from their babies."]},
+ {t:"mc",q:`מה פירוש המילה ${en("<b>several</b>")} בטקסט?`,o:["כמה, אחדים","מעט מאוד","אף אחד","כולם"]},
+];
+
+/* =========================================================
+   נושאים ושלבים
+   ========================================================= */
+/* ===== דפי חזרה – כמו במבחן ===== */
+const BANK = ["decides","several","spell","repeats","team","below","opposite","glad","reason","instructions","still","islands","order","leave","dictionary","returns","afraid","raise","clever","nature","pick","popular","saw","about","find out","mountain","example","conversation","anything","tasks","guess","quiz","describe","document","folder","vocabulary","hit","correct","famous","thousands","completes"];
+const BANK_Q = [
+ ["We have an English ___ almost every week.","quiz"],["She doesn't always ___ her hand before she speaks in class.","raise"],
+ ["My little brother ___ everything I say, and it makes me angry!","repeats"],["Mom asks \"Why?\" because she wants to know the ___.","reason"],
+ ["Before you do the exercise, read the ___.","instructions"],["Maya is very ___. She always gets 100% on tests.","clever"],
+ ["This movie is about ___: forests, rivers and animals.","nature"],["___ of people visit the Hermon in the winter.","Thousands"],
+ ["The Hermon is a high ___.","mountain"],["My friends and I ___ a very good movie yesterday.","saw"],
+ ["Mom's cookies are great. Now there are only ___ cookies in the jar.","several"],["The ___ of \"white\" is \"black\".","opposite"],
+ ["\"___\" means to learn something new.","Find out"],["How many words are in this big ___?","dictionary"],
+ ["Many people ___ pizzas when they watch football on TV.","order"],["Can you ___ what I have in this box?","guess"],
+ ["Everybody in Israel knows and loves this singer. She is very ___.","popular"],["Japan is a country of many ___. They have water all around them.","islands"],
+ ["It's 7:30 and you're ___ in bed! You're going to be late!","still"],["People in Japan ___ their shoes near the door.","leave"],
+ ["Be careful on your bike. A car can ___ you.","hit"],["I was so ___ before the test! Now I'm glad it's over.","afraid"],
+ ["Haruki and Lisa are ___ the same age.","about"],["Susan likes the blue dress, so she ___ to buy it.","decides"],
+ ["Do you know all the new ___ for the test?","vocabulary"],["You also need to know how to ___ some of the words.","spell"],
+ ["I hope you write the ___ answers in the test.","correct"],["Linda never ___ her presents to the shop. She always keeps them.","returns"],
+ ["Is that boy on your football ___?","team"],["Put all your worksheets in your English ___.","folder"],
+ ["Please don't listen to our ___. It's private.","conversation"],["The policeman wants me to ___ the man who took my bag.","describe"],
+ ["Robert always ___ his classroom tasks quickly.","completes"],["Please write your surname ___ your first name.","below"],
+ ["___ a card. Any card you like!","Pick"],["Open a new ___ on the computer and write your story.","document"],
+ ["Look at the ___ before you start. It shows you what to do.","example"],["I'm not hungry. I don't want ___ to eat.","anything"],
+ ["Neta is a ___ Israeli singer. People all over the world know her.","famous"],["I'm ___ you can come to my party!","glad"]
+];
+function genBank(n){
+  return sample(BANK_Q,n).map(([q,a])=>{
+    const al=a.toLowerCase(), avoid={popular:["famous"],famous:["popular"],afraid:[],glad:[]};
+    const pool=BANK.filter(w=>w!==al && !(avoid[al]||[]).includes(w));
+    const cap=/^___/.test(q), fix=w=>cap?w[0].toUpperCase()+w.slice(1):w;
+    return {t:"mc",q:`בחר את המילה המתאימה:<br>${en("<b>"+esc(q)+"</b>")}`,o:[a,...sample(pool,3).map(fix)],enOpts:true,ans:q.replace("___",a)};
+  });
+}
+const REV_GRAM = [
+ mcEn(`My father ___ a new car. It ___ blue.`,["has … is","is … has","have … is","has … are"]),
+ mcEn(`We ___ English lessons three days a week. Our lessons ___ in the morning.`,["have … are","are … have","has … is","have … is"]),
+ mcEn(`My parents ___ at home now. They are at the doctor's.`,["aren't","isn't","haven't","not"]),
+ mcEn(`My elder sister and I ___ at home.`,["are","is","am","has"]),
+ mcEn(`Some of my friends ___ little brothers or sisters.`,["have","has","are","is"]),
+ mcEn(`My friend Lily ___ very long hair. Her eyes ___ green.`,["has … are","is … are","has … is","have … are"]),
+ mcEn(`Our new garden ___ many trees. All the trees ___ many fruits.`,["has … have","have … has","is … are","has … has"]),
+ mcEn(`I ___ in bed because I ___ a lot of work to do.`,["am not … have","not am … have","am not … has","isn't … have"]),
+ mcEn(`The dog's tail ___ up. He ___ very happy. He ___ a new toy.`,["is … is … has","are … is … has","is … has … is","has … is … has"]),
+ mcEn(`Diana and Jerry ___ a son and a daughter. The son ___ seven years old.`,["have … is","has … is","are … has","have … are"]),
+ mcEn(`They ___ in the same school, but they ___ in the same class.`,["are … aren't","is … isn't","have … aren't","are … isn't"]),
+ mcEn(`There ___ many books in the library.`,["are","is","have","has"]),
+ mcEn(`John and I are friends. ___ love to play soccer.`,["We","They","He","I"]),
+ mcEn(`Sarah is my sister. ___ helps me with my homework.`,["She","He","It","They"]),
+ mcEn(`My parents are doctors. ___ work in a hospital.`,["They","We","He","It"]),
+ mcEn(`This is my book. ___ isn't new.`,["It","He","She","They"]),
+ mcEn(`You and Peter are my friends. ___ always play with me.`,["You","They","We","He"]),
+ mcEn(`Those monkeys are funny. ___ make funny noises.`,["They","It","We","He"]),
+ mcEn(`My teeth are very white. ___ are always clean.`,["They","It","He","We"]),
+ mcEn(`The cake is very tasty. ___ has lots of chocolate chips.`,["It","He","She","They"]),
+ mcEn(`Alon School isn't near my school, but ___ is also in Givat Shmuel.`,["it","he","they","she"]),
+ mcEn(`___ summers in Eilat are very hot.`,["The","A","An","This"]),
+ mcEn(`___ people in this picture are my grandparents. ___ woman is my mom's mother.`,["The … The","A … The","The … A","Some … An"]),
+ mcEn(`It isn't ___ big building, and ___ neighbors are like family.`,["a … the","an … the","the … a","some … a"]),
+];
+const ARRANGE = [
+ ["is / haifa / where / university","?","Where is Haifa University?"],
+ ["park / are / they / the / in","?","Are they in the park?"],
+ ["father / is / hungry / not",".",["Father is not hungry.","Father isn't hungry."]],
+ ["the / monkeys / are / the / mountains / in / clever",".","The monkeys in the mountains are clever."],
+ ["school / we / are / at / not / today",".",["We are not at school today.","We aren't at school today.","Today we are not at school.","Today we aren't at school."]],
+ ["famous / in / israel / is / noa",".","Noa is famous in Israel."],
+ ["in / are / class / there / funny / my / children",".","There are funny children in my class."],
+ ["bag / has / yoni / sandwiches / with / blue / a",".","Yoni has a blue bag with sandwiches."],
+ ["is / new / dan's / japan / from / computer",".","Dan's new computer is from Japan."],
+ ["old / is / months / puppy / our / six / cute",".","Our cute puppy is six months old."],
+ ["english / is / who / teacher / your","?","Who is your English teacher?"],
+ ["eyes / sister / has / my / blue",".","My sister has blue eyes."],
+ ["is / tokyo / city / in / japan / a",".","Tokyo is a city in Japan."],
+ ["restaurant / we / are / a / in / not / eilat / in",".",["We are not in a restaurant in Eilat.","We aren't in a restaurant in Eilat."]],
+];
+function genArrange(n){
+  return sample(ARRANGE,n).map(([w,sign,a])=>({t:"type",form:true,q:`סדר את המילים למשפט נכון (שים לב לאותיות גדולות ולסימן בסוף):<br>${en("<b>"+esc(w)+" &nbsp; "+sign+"</b>")}`,a:Array.isArray(a)?a:[a],
+    ex:"אות גדולה: בתחילת משפט, ב-I, ובשמות של אנשים, ערים, ארצות ושפות (Noa, Haifa, Japan, English)."}));
+}
+const ABOUT_ME = [
+ {t:"line",q:"About Me 1: הצג את עצמך בשם.",req:[["(my name is|i am|i'm) [a-z]","My name is ... / I am ..."]],model:"My name is Omer."},
+ {t:"line",q:"About Me 2: כתוב משפט על הגיל שלך.",req:[["(i am|i'm) .*(old|[0-9]+|ten|eleven|twelve)","I am ... years old"]],model:"I am eleven years old."},
+ {t:"line",q:"About Me 3: כתוב מאיפה אתה.",req:[["(from|live in)","from / live in"]],model:"I am from Haifa."},
+ {t:"line",q:"About Me 4: כמה אחים/אחיות יש לך?",req:[["(have|has)","have"],["(brother|sister)","brother / sister"]],model:"I have two brothers and a sister."},
+ {t:"line",q:"About Me 5: כתוב משפט על חיית המחמד שלך (אם אין – על חיה שאתה אוהב).",req:[["(dog|cat|pet|fish|bird|rabbit|hamster|parrot|turtle|horse|monkey)","שם של חיה"]],model:"I have a dog. His name is Rex."},
+ {t:"line",q:"About Me 6: כתוב משפט על אוכל שאתה אוהב.",req:[["(favorite|favourite|love|like)","favorite / love / like"]],model:"My favorite food is pizza."},
+ {t:"line",q:"About Me 7: כתוב משפט על התחביב שלך.",req:[["(hobby|love|like|play)","hobby / love / like / play"]],model:"My hobby is basketball."},
+ {t:"line",q:"About Me 8: כתוב משפט על החברים שלך.",req:[["friend","friend"]],model:"I have many good friends."},
+ {t:"line",q:"About Me 9: כתוב משפט על החבר/ה הכי טוב/ה שלך.",req:[["best friend","best friend"]],model:"My best friend is Noam. He is funny."},
+ {t:"line",q:"About Me 10: כתוב משפט על מה שאתה אוהב בבית הספר.",req:[["school","school"]],model:"I love sports at school."},
+];
+const DESCRIBE = [
+ {t:"line",q:"תאר בעזרת is ו-has: 👴 <b>סבא – בן 70, שיער לבן, משקפיים, שמח.</b>",req:[["\\bis\\b","is"],["\\bhas\\b","has"]],model:"He is seventy years old. He is happy. He has white hair and glasses."},
+ {t:"line",q:"תאר בעזרת are ו-have: 🧑‍🤝‍🧑 <b>ארבעה תלמידים – חברים, יש להם תיקים וספרים.</b>",req:[["\\bare\\b","are"],["\\bhave\\b","have"]],model:"They are friends. They are students. They have bags and books."},
+ {t:"line",q:"תאר בעזרת is ו-has: 👩‍🍼 <b>אמא ותינוקת – האמא צעירה, לתינוקת יש שיער קצר.</b>",req:[["\\bis\\b","is"],["\\bhas\\b","has"]],model:"The mother is young. The baby is happy. She has short hair."},
+];
+
+const TOPICS = [
+ {id:"class",group:"א. אוצר מילים",icon:"📚",title:"מילות הוראה בכיתה",desc:"Word Power 1+2 – ספר עמ' 7–10",
+  levels:[()=>genEnHe(W_CLASS,10),()=>shuffle([...genHeEn(W_CLASS,5),...genClassSent(5)]),()=>sample(CLASS_HARD,10)]},
+ {id:"unit",group:"א. אוצר מילים",icon:"🗾",title:"יחידה 1: יפן וקופי שלג",desc:"מילים חדשות + שמות תואר – ספר עמ' 12, 20, 22",
+  levels:[()=>genEnHe([...W_UNIT,...W_ADJ],10),()=>genHeEn([...W_UNIT,...W_ADJ],10),()=>sample(UNIT_HARD,10)]},
+ {id:"food",group:"א. אוצר מילים",icon:"🍎",title:"אוכל ומילים מהחוברת",desc:"חוברת עמ' 8, 9, 16, 17",
+  levels:[()=>shuffle([...genEmoji(5),...genEnHe([...W_FOOD,...W_BOOKLET],5)]),()=>genHeEn([...W_FOOD,...W_BOOKLET],10),()=>sample(FOOD_HARD,10)]},
+ {id:"nouns",group:"ב. דקדוק",icon:"🔢",title:"יחיד ורבים, a/an, the, some, this/these",desc:"קובץ ההסברים והתרגול, קובץ תרגול I",
+  levels:[genNounEasy,()=>shuffle([...sample(NOUN_MID,7),...genPluralType(5)]),()=>sample(NOUN_HARD,10)]},
+ {id:"be",group:"ב. דקדוק",icon:"🙋",title:"שמות גוף + to be",desc:"חיובי, שלילי, שאלות כן/לא ושאלות Wh",
+  levels:[()=>sample(BE_EASY,10),()=>sample(BE_MID,10),()=>sample(BE_HARD,8)]},
+ {id:"have",group:"ב. דקדוק",icon:"🎒",title:"to have",desc:"have / has במשפטים חיוביים",
+  levels:[()=>sample(HAVE_EASY,10),()=>sample(HAVE_MID,8),()=>sample(HAVE_HARD,8)]},
+ {id:"write",group:"ג. כתיבה",icon:"✍️",title:"כתיבה ותרגום משפטים",desc:"אות גדולה, נקודה, סימן שאלה – ותרגום מעברית",
+  levels:[()=>sample(WRITE_EASY,8),()=>sample(WRITE_MID,8),()=>[...sample(WRITE_HARD,7),FREE_WRITE]]},
+ {id:"read",group:"ד. הבנת הנקרא",icon:"📖",title:"הבנת הנקרא",desc:"TRUE/FALSE + העתקת משפט, שאלות כן/לא ו-Wh",
+  levels:[()=>READ1.slice(),()=>READ2.slice(),()=>READ3.slice()], texts:[TEXT1,TEXT2,TEXT3]},
+ {id:"review",group:"ה. דפי חזרה – כמו במבחן",icon:"🎯",title:"דפי חזרה למבחן 1",desc:"אוצר מילים במשפטים · be/have, שמות גוף, a/an/the/some · סידור משפטים ו-About Me",
+  levels:[()=>genBank(12),()=>sample(REV_GRAM,12),()=>[...genArrange(6),...sample(ABOUT_ME,3),...sample(DESCRIBE,1)]]},
+];
+const LVL_NAMES=["קל","בינוני","קשה"];
+
+/* =========================================================
+   בדיקת תשובות מוקלדות
+   ========================================================= */
+function norm(s){
+  s=String(s).toLowerCase().replace(/[’‘`]/g,"'");
+  s=s.replace(/\bi'm\b/g,"i am").replace(/\b(he|she|it|that|what|where|who|there)'s\b/g,"$1 is")
+     .replace(/\b(we|you|they)'re\b/g,"$1 are").replace(/\bisn't\b/g,"is not").replace(/\baren't\b/g,"are not")
+     .replace(/\bcan't\b/g,"can not").replace(/\bdon't\b/g,"do not").replace(/\bdoesn't\b/g,"does not");
+  return s.replace(/[^a-z0-9' ]/g," ").replace(/'/g," ").replace(/\s+/g," ").trim();
+}
+function formIssues(input, model){
+  const t=input.trim(), issues=[];
+  if(!/^[A-Z]/.test(t)) issues.push("משפט מתחיל באות גדולה.");
+  const wantQ=/\?$/.test(model.trim());
+  if(wantQ && !/\?$/.test(t)) issues.push("שאלה מסתיימת בסימן שאלה ?");
+  else if(!wantQ && !/[.!]$/.test(t)) issues.push("משפט מסתיים בנקודה.");
+  if(/(^|\s)i(\s|'|$)/.test(t)) issues.push("המילה I (אני) נכתבת תמיד באות גדולה.");
+  model.split(/\s+/).slice(1).forEach(w=>{
+    w=w.replace(/[^A-Za-z']/g,"");
+    if(w && /^[A-Z]/.test(w) && w!=="I"){
+      const re=new RegExp("\\b"+w.toLowerCase()+"\\b");
+      if(re.test(t.toLowerCase()) && !new RegExp("\\b"+w+"\\b").test(t)) issues.push(`${w} – שם (של אדם/מקום/שפה) נכתב באות גדולה.`);
+    }
+  });
+  return issues;
+}
+
+/* =========================================================
+   מצב והצגה
+   ========================================================= */
+let S=null;
+const app=$("#app");
+
+function home(){
+  S=null;
+  const prog=loadProg();
+  let html=`<header class="top"><div><h1>מתכוננים למבחן באנגלית 🇬🇧</h1><p class="sub">כיתה ו' – מבחן 1</p></div><div class="exam-chip">📅 המבחן: 24.11</div></header>
+  <div class="howto">בכל נושא יש 3 שלבים: <b style="color:var(--easy)">קל</b> → <b style="color:var(--mid)">בינוני</b> → <b style="color:var(--hard)">קשה</b>. כדאי להתחיל בקל ולהתקדם. השאלות מתערבבות בכל פעם, אז אפשר לשחק שוב ושוב. ⭐⭐⭐ = 90% ומעלה.</div>`;
+  let group="";
+  TOPICS.forEach((t,ti)=>{
+    if(t.group!==group){ if(group) html+=`</div>`; group=t.group; html+=`<div class="section-title">${group}</div><div class="grid">`; }
+    html+=`<div class="topic"><div class="t-head"><div class="icon">${t.icon}</div><div><h3>${t.title}</h3><p>${t.desc}</p></div></div><div class="levels">`;
+    [0,1,2].forEach(l=>{
+      const best=prog[t.id+"_"+l]; const st=best==null?"":("★".repeat(stars(best))+"☆".repeat(3-stars(best)));
+      html+=`<button class="lvl l${l}" onclick="start(${ti},${l})">${LVL_NAMES[l]}<span class="stars">${st}</span></button>`;
+    });
+    html+=`</div></div>`;
+  });
+  html+=`</div><div class="resetall"><button class="linkbtn" onclick="if(confirm('לאפס את כל הכוכבים?')){saveProg({});home();}">איפוס התקדמות</button></div>`;
+  app.innerHTML=html; window.scrollTo(0,0);
+}
+function stars(p){return p>=90?3:p>=70?2:p>=50?1:0;}
+
+function start(ti,l){
+  const t=TOPICS[ti];
+  S={ti,l,topic:t,qs:t.levels[l](),i:0,score:0,max:0,mistakes:[],text:t.texts?t.texts[l]:null};
+  S.max=S.qs.length;
+  showQ();
+}
+
+function head(){
+  const t=S.topic, pct=Math.round(S.i/S.qs.length*100);
+  return `<div class="qbar"><button class="back" onclick="home()">→ חזרה</button><div class="qtitle">${t.icon} ${t.title}<span class="badge l${S.l}">${LVL_NAMES[S.l]}</span></div></div>
+  <div class="progress"><div style="width:${pct}%"></div></div>`;
+}
+function textHTML(txt){
+  let h=`<h4>${txt.title} ${spk(txt.paras.filter(Array.isArray).flat().join(" "))}</h4>`;
+  txt.paras.forEach(p=>{
+    if(p.sec){h+=`<div class="sec">${p.sec}</div>`;return;}
+    h+=`<p>`+p.map(s=>`<span class="s" data-s="${esc(s)}">${esc(s)}</span>`).join(" ")+`</p>`;
+  });
+  return h;
+}
+
+function showQ(){
+  const q=S.qs[S.i];
+  let h=head()+`<div class="card" id="card">`;
+  if(S.text) h+=`<details class="rtoggle" open><summary>הטקסט (לחץ להסתרה/הצגה)</summary><div class="reading" id="reading">${textHTML(S.text)}</div></details>`;
+  h+=`<div class="qnum">שאלה ${S.i+1} מתוך ${S.qs.length}</div>`;
+  if(q.t==="mc"){
+    const opts=(q.o.length===2||q.keepOrder)?q.o.slice():shuffle(q.o);
+    h+=`<div class="qtext">${q.q}</div><div class="opts">`+opts.map(o=>`<button class="opt ${q.enOpts?"en-opt":""}" data-v="${esc(o)}">${q.enOpts?esc(o):o}</button>`).join("")+`</div>`;
+  } else if(q.t==="type"){
+    h+=`<div class="qtext">${q.q}</div>${q.form?`<div class="hint">שים לב לאות גדולה בהתחלה ולנקודה / סימן שאלה בסוף.</div>`:""}
+      <input class="ans" id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type here..."><div class="row"><button class="btn" id="chk">בדיקה</button></div>`;
+  } else if(q.t==="build"){
+    const words=q.a.split(" "); const tiles=shuffle([...words,...(q.extra||[])]);
+    h+=`<div class="qtext">${q.q}</div><div class="hint">לחץ על המילים לפי הסדר הנכון${q.extra?" (יש מילה אחת מיותרת!)":""}.</div>
+      <div class="zone" id="zone"></div><div class="bank" id="bank">`+tiles.map((w,k)=>`<button class="tile" data-k="${k}">${esc(w)}</button>`).join("")+`</div>
+      <div class="row"><button class="btn" id="chk">בדיקה</button><button class="btn ghost" id="clr">נקה</button></div>`;
+  } else if(q.t==="open"){
+    h+=`<div class="qtext">${en(esc(q.q))}</div><div class="hint">ענה במשפט שלם, עם כל המידע מהטקסט. מותר להעתיק מהטקסט.</div>
+      <textarea class="ans" id="inp" spellcheck="false" placeholder="Write a full sentence..."></textarea><div class="row"><button class="btn" id="chk">בדיקה</button></div>`;
+  } else if(q.t==="tfpick"){
+    h+=`<div class="qtext">${en(esc(q.s))}</div><div class="step">א. TRUE או FALSE?</div>
+      <div class="tf"><button class="opt" data-v="true">TRUE</button><button class="opt" data-v="false">FALSE</button></div><div id="step2"></div>`;
+  } else if(q.t==="line"){
+    h+=`<div class="qtext">${q.q}</div><div class="hint">כתוב באנגלית – משפט שלם, אות גדולה בהתחלה ונקודה בסוף.</div>
+      <textarea class="ans" id="inp" spellcheck="false" style="min-height:80px" placeholder="Write here..."></textarea><div class="row"><button class="btn" id="chk">בדיקה</button></div>`;
+  } else if(q.t==="free"){
+    h+=`<div class="qtext">${q.q}</div><textarea class="ans" id="inp" spellcheck="false" style="min-height:170px" placeholder="This is my ..."></textarea><div class="row"><button class="btn" id="chk">בדיקה</button></div>`;
+  }
+  h+=`<div id="fb"></div></div>`;
+  app.innerHTML=h; window.scrollTo(0,0);
+  wire(q);
+}
+
+function wire(q){
+  if(q.t==="mc"){
+    document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      const ok=b.dataset.v===q.o[0];
+      document.querySelectorAll(".opt").forEach(x=>{x.disabled=true; if(x.dataset.v===q.o[0]) x.classList.add("ok");});
+      if(!ok) b.classList.add("bad");
+      finish(ok?1:0, ok?"כל הכבוד! ✔️":"לא נכון. התשובה הנכונה מסומנת בירוק.", q.ex, q.ans||plain(q.q)+" → "+stripTags(q.o[0]));
+    });
+  }
+  if(q.t==="type"){
+    const inp=$("#inp"); inp.focus();
+    const go=()=>{
+      const v=inp.value; if(!v.trim()) return;
+      inp.disabled=true; $("#chk").disabled=true;
+      const hit=q.a.find(a=>norm(a)===norm(v));
+      if(!hit){ finish(0,"לא בדיוק.",q.ex||null,stripTags(q.q)+" → "+q.a[0],`<div class="model">תשובה נכונה: ${en("<b>"+esc(q.a[0])+"</b>")}${q.a.length>1?`<br>אפשר גם: ${q.a.slice(1).map(x=>en(esc(x))).join(" / ")}`:""}</div>`); return; }
+      const iss=q.form?formIssues(v,hit):[];
+      if(iss.length) finish(.5,"התוכן נכון! אבל שים לב לכתיבה:",q.form&&q.q.includes("סדר את")?q.ex:null,stripTags(q.q)+" → "+hit,`<ul>${iss.map(x=>`<li>${x}</li>`).join("")}</ul><div class="model">כך זה נכתב: ${en("<b>"+esc(hit)+"</b>")}</div>`,"warn");
+      else finish(1,"מצוין! ✔️",null,null,q.a.length>1?`<div class="model">אפשר גם: ${q.a.filter(x=>x!==hit).map(x=>en(esc(x))).join(" / ")}</div>`:"");
+    };
+    $("#chk").onclick=go; inp.onkeydown=e=>{if(e.key==="Enter")go();};
+  }
+  if(q.t==="build"){
+    const zone=$("#zone"), bank=$("#bank"); let order=[];
+    const render=()=>{zone.innerHTML=order.map((k,idx)=>`<button class="tile" data-idx="${idx}">${esc(bank.querySelector(`[data-k="${k}"]`).textContent)}</button>`).join("");
+      zone.querySelectorAll(".tile").forEach(t=>t.onclick=()=>{const k=order.splice(+t.dataset.idx,1)[0];bank.querySelector(`[data-k="${k}"]`).classList.remove("used");render();});};
+    bank.querySelectorAll(".tile").forEach(t=>t.onclick=()=>{if(t.classList.contains("used"))return;t.classList.add("used");order.push(t.dataset.k);render();});
+    $("#clr").onclick=()=>{order=[];bank.querySelectorAll(".tile").forEach(t=>t.classList.remove("used"));render();};
+    $("#chk").onclick=()=>{
+      if(!order.length) return;
+      const v=order.map(k=>bank.querySelector(`[data-k="${k}"]`).textContent).join(" ");
+      $("#chk").disabled=true; $("#clr").disabled=true; zone.querySelectorAll(".tile").forEach(t=>t.onclick=null); bank.querySelectorAll(".tile").forEach(t=>t.onclick=null);
+      const ok=v===q.a;
+      finish(ok?1:0, ok?"מצוין! ✔️":"לא בדיוק.", null, q.q+" → "+q.a, ok?"":`<div class="model">המשפט הנכון: ${en("<b>"+esc(q.a)+"</b>")}</div>`);
+    };
+  }
+  if(q.t==="open"){
+    const inp=$("#inp"); inp.focus();
+    $("#chk").onclick=()=>{
+      const v=inp.value.trim(); if(!v) return;
+      inp.disabled=true; $("#chk").disabled=true;
+      const low=v.toLowerCase();
+      const got=q.keys.filter(k=>k.split("|").some(a=>low.includes(a)));
+      const tips=[];
+      if(v.split(/\s+/).length<3) tips.push("ענה במשפט שלם, לא רק במילה אחת.");
+      if(!/^[A-Z]/.test(v)) tips.push("משפט מתחיל באות גדולה.");
+      if(!/[.!?]$/.test(v)) tips.push("משפט מסתיים בנקודה.");
+      const sc=got.length===q.keys.length?1:got.length?0.5:0;
+      const msg=sc===1?"התשובה נכונה! ✔️":sc?"חלק מהמידע חסר.":"התשובה לא מתאימה לטקסט.";
+      finish(sc,msg,null,q.q+" → "+q.model,`${tips.length?`<ul>${tips.map(x=>`<li>${x}</li>`).join("")}</ul>`:""}<div class="model">תשובה לדוגמה: ${en("<b>"+esc(q.model)+"</b>")}</div>`, sc===1&&!tips.length?"ok":sc===0?"bad":"warn");
+    };
+  }
+  if(q.t==="tfpick"){
+    let s1=0;
+    document.querySelectorAll(".tf .opt").forEach(b=>b.onclick=()=>{
+      const ok=(b.dataset.v==="true")===q.a; s1=ok?.5:0;
+      document.querySelectorAll(".tf .opt").forEach(x=>{x.disabled=true; if((x.dataset.v==="true")===q.a) x.classList.add("ok");});
+      if(!ok) b.classList.add("bad");
+      $("#step2").innerHTML=`<div class="fb ${ok?"ok":"bad"}">${ok?"נכון!":"לא נכון – התשובה היא "+(q.a?"TRUE":"FALSE")+"."}</div>
+        <div class="step">ב. ${en("Copy the sentence that shows this")} – לחץ על המשפט בטקסט שמוכיח את זה 👆</div>`;
+      const rd=$("#reading"); rd.closest("details").open=true; rd.classList.add("picking");
+      rd.scrollIntoView({behavior:"smooth",block:"start"});
+      rd.querySelectorAll(".s").forEach(sp=>sp.onclick=()=>{
+        rd.classList.remove("picking"); rd.querySelectorAll(".s").forEach(x=>x.onclick=null);
+        const ok2=q.pick.includes(sp.dataset.s);
+        if(!ok2) sp.classList.add("bad");
+        rd.querySelectorAll(".s").forEach(x=>{if(q.pick.includes(x.dataset.s)) x.classList.add("ok");});
+        const sc=s1+(ok2?.5:0);
+        finish(sc, sc===1?"מצוין! גם TRUE/FALSE וגם המשפט נכונים ✔️":ok2?"המשפט נכון 👍":"המשפט הנכון מסומן בירוק.", null,
+          `${q.s} → ${q.a?"TRUE":"FALSE"}: "${q.pick[0]}"`, `<div class="model">בתשובה כותבים: ${en(`<b>${q.a?"TRUE":"FALSE"}</b> – "${esc(q.pick[0])}"`)}</div>`, sc===1?"ok":sc===0?"bad":"warn");
+      });
+    });
+  }
+  if(q.t==="line"){
+    $("#inp").focus();
+    $("#chk").onclick=()=>{
+      const v=$("#inp").value.trim(); if(!v) return;
+      const low=v.toLowerCase().replace(/[’]/g,"'");
+      const sents=v.split(/(?<=[.!?])\s+|\n+/).map(x=>x.trim()).filter(Boolean);
+      const checks=[
+        [sents.every(x=>/^[A-Z]/.test(x)),"כל משפט מתחיל באות גדולה"],
+        [sents.every(x=>/[.!?]$/.test(x)),"כל משפט מסתיים בנקודה"],
+        [!/(^|\s)i(\s|'|$)/.test(v),"המילה I כתובה באות גדולה"],
+        ...q.req.map(([re,label])=>[new RegExp(re,"i").test(low),`השתמשת ב: <span class="en">${label}</span>`])
+      ];
+      const pass=checks.filter(c=>c[0]).length, sc=pass===checks.length?1:pass>=checks.length-1?.5:0;
+      $("#chk").disabled=true; $("#inp").disabled=true;
+      finish(sc, sc===1?"מצוין! ✔️":"כמעט! בדוק:", null, null,
+        `<ul>${checks.map(c=>`<li>${c[0]?"✅":"❌"} ${c[1]}</li>`).join("")}</ul><div class="model">דוגמה: ${en(esc(q.model))}</div>`, sc===1?"ok":sc?"warn":"bad");
+    };
+  }
+  if(q.t==="free"){
+    $("#chk").onclick=()=>{
+      const v=$("#inp").value.trim(); if(!v) return;
+      const sents=v.split(/(?<=[.!?])\s+|\n+/).map(s=>s.trim()).filter(Boolean);
+      const low=" "+v.toLowerCase().replace(/[^a-z' ]/g," ")+" ";
+      const checks=[
+        [sents.length>=4,`כתבת ${sents.length} משפטים (צריך לפחות 4)`],
+        [sents.every(s=>/^[A-Z]/.test(s)),"כל משפט מתחיל באות גדולה"],
+        [sents.every(s=>/[.!?]$/.test(s)),"כל משפט מסתיים בנקודה"],
+        [/ (am|is|are|i'm|he's|she's|it's|we're|they're) /.test(low),"השתמשת ב-am / is / are"],
+        [/ (has|have) /.test(low),"השתמשת ב-have / has"],
+        [!/(^|\s)i(\s|'|$)/.test(v),"המילה I כתובה באות גדולה"],
+      ];
+      const pass=checks.filter(c=>c[0]).length;
+      const sc=pass===checks.length?1:pass>=4?.5:0;
+      $("#chk").disabled=true; $("#inp").disabled=true;
+      finish(sc, sc===1?"כתיבה מצוינת! ✔️":"כמעט! בדוק את הרשימה:", null, null,
+        `<ul>${checks.map(c=>`<li>${c[0]?"✅":"❌"} ${c[1]}</li>`).join("")}</ul><div class="model">דוגמה: ${en(esc(FREE_WRITE.model))}</div><div class="model" style="font-size:15px">💡 תבקש מאבא/אמא לבדוק גם את התוכן.</div>`, sc===1?"ok":"warn");
+    };
+  }
+}
+function stripTags(s){return String(s).replace(/<button[\s\S]*?<\/button>/g,"").replace(/<[^>]+>/g,"").replace(/\s+/g," ").trim();}
+function plain(s){return stripTags(s);}
+
+function finish(points,msg,ex,review,extra="",cls){
+  S.score+=points;
+  if(points<1 && review) S.mistakes.push(review);
+  const c=cls||(points>=1?"ok":points>0?"warn":"bad");
+  const last=S.i===S.qs.length-1;
+  $("#fb").innerHTML=`<div class="fb ${c}"><b>${msg}</b>${ex?`<div class="model">💡 ${ex}</div>`:""}${extra||""}</div>
+    <div class="row"><button class="btn" id="next">${last?"לסיכום 🏁":"הבא ←"}</button></div>`;
+  const nx=$("#next"); nx.onclick=next; setTimeout(()=>nx.focus({preventScroll:true}),50);
+  $("#fb").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function next(){ S.i++; if(S.i<S.qs.length) showQ(); else summary(); }
+
+function summary(){
+  const pct=Math.round(S.score/S.max*100), st=stars(pct);
+  const prog=loadProg(), key=S.topic.id+"_"+S.l;
+  if(prog[key]==null||pct>prog[key]){prog[key]=pct;saveProg(prog);}
+  const msg=pct>=90?"מעולה! אתה מוכן! 🏆":pct>=70?"יפה מאוד! עוד קצת תרגול ⭐":pct>=50?"התחלה טובה – נסה שוב 💪":"כדאי לחזור על החומר ולנסות שוב 📚";
+  const nextLvl=S.l<2&&pct>=70?`<button class="btn" onclick="start(${S.ti},${S.l+1})">לשלב ה${LVL_NAMES[S.l+1]} →</button>`:"";
+  app.innerHTML=head().replace('style="width:'+Math.round(S.i/S.qs.length*100)+'%"','style="width:100%"')+`<div class="card sum">
+    <div class="bigstars">${"★".repeat(st)}${"☆".repeat(3-st)}</div><div class="score">${pct}%</div><div style="font-size:20px;font-weight:700">${msg}</div>
+    <div class="row" style="justify-content:center;margin-top:18px">${nextLvl}<button class="btn ghost" onclick="start(${S.ti},${S.l})">שוב 🔁</button><button class="btn ghost" onclick="home()">לכל הנושאים</button></div>
+    ${S.mistakes.length?`<div class="mist"><h4>כדאי לחזור על:</h4><ul>${S.mistakes.map(m=>`<li><bdi>${esc(m)}</bdi></li>`).join("")}</ul></div>`:""}
+  </div>`;
+  window.scrollTo(0,0);
+}
+
+home();
+</script>
+</body>
+</html>
