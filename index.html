@@ -102,6 +102,31 @@ details.rtoggle summary{cursor:pointer;color:var(--brand);font-weight:700;margin
 .mist h4{margin:0 0 8px}
 .mist li{margin-bottom:8px}
 .tag{display:inline-block;background:var(--brand-soft);border-radius:8px;padding:0 8px;font-size:14px;color:var(--brand)}
+/* explanations */
+.exbtn{border:2px solid var(--brand);background:#fff;color:var(--brand);border-radius:12px;padding:7px 10px;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.exbtn:hover{background:var(--brand-soft)}
+.ex-head{display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+.ex-head h2{margin:0;font-size:24px;flex:1}
+.ex-sec{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin:12px 0}
+.ex-sec h3{margin:0 0 8px;font-size:19px;color:var(--brand)}
+.ex-sec p{margin:6px 0}
+.ex-sec ul{margin:6px 0;padding-inline-start:22px}
+.ex-sec li{margin:4px 0}
+.ex-box{background:#fbf8f1;border-radius:12px;padding:10px 14px;margin:8px 0;direction:ltr;text-align:left;font-size:18px;line-height:1.7}
+.ex-box .bad{color:var(--bad);text-decoration:line-through}
+.ex-box .good{color:var(--ok);font-weight:700}
+.key{background:var(--warn-soft);border-right:4px solid var(--mid);border-radius:10px;padding:10px 14px;margin:10px 0;font-weight:500}
+table.rt{width:100%;border-collapse:collapse;margin:8px 0;font-size:17px}
+table.rt th,table.rt td{border:1px solid var(--line);padding:7px 9px;text-align:start;vertical-align:top}
+table.rt th{background:var(--brand-soft)}
+table.rt td.e,table.rt th.e{direction:ltr;text-align:left}
+.mark{color:var(--hard);font-weight:800}
+.wordlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px;margin-top:6px}
+.wordlist div{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fbf8f1;border-radius:10px;padding:6px 10px}
+.wordlist .w{direction:ltr;font-weight:700}
+.ex-start{display:flex;gap:8px;margin:18px 0 6px}
+.modal{position:fixed;inset:0;background:rgba(20,24,35,.45);display:flex;align-items:flex-start;justify-content:center;padding:20px 10px;overflow:auto;z-index:50}
+.modal .inner{background:var(--bg);border-radius:18px;max-width:820px;width:100%;padding:18px}
 @media (max-width:520px){
   body{font-size:17px}
   h1{font-size:23px}
@@ -700,6 +725,226 @@ const DESCRIBE = [
  {t:"line",q:"תאר בעזרת is ו-has: 👩‍🍼 <b>אמא ותינוקת – האמא צעירה, לתינוקת יש שיער קצר.</b>",req:[["\\bis\\b","is"],["\\bhas\\b","has"]],model:"The mother is young. The baby is happy. She has short hair."},
 ];
 
+/* =========================================================
+   הסברים לכל נושא
+   ========================================================= */
+const BX = h => `<div class="ex-box">${h}</div>`;
+const SEC = (t,b) => `<div class="ex-sec"><h3>${t}</h3>${b}</div>`;
+const KEY = h => `<div class="key">⭐ ${h}</div>`;
+function wordList(list){return `<div class="wordlist">${list.map(([e,h])=>`<div><span class="w">${esc(e)}</span><span>${esc(h)}</span>${spk(e)}</div>`).join("")}</div>`;}
+
+const EXPLAIN = {
+class: () =>
+ SEC("איך לומדים את המילים האלה?",`<p>המילים האלה מופיעות ב<b>הוראות</b> של התרגילים – בספר, בחוברת ובמבחן. במבחן צריך <b>להבין ולתרגם</b> אותן (לא חובה לדעת לכתוב).</p>
+  ${KEY("טיפ: כשקוראים הוראה, מחפשים קודם את <b>הפועל</b> בהתחלה – הוא אומר מה לעשות: <span class='en'>Read, Write, Match, Complete, Choose, Copy</span>.")}`)+
+ SEC("הוראות נפוצות",`<table class="rt"><tr><th class="e">English</th><th>מה עושים</th></tr>
+  <tr><td class="e">Complete the sentences.</td><td>השלימו את המשפטים</td></tr>
+  <tr><td class="e">Use the words below.</td><td>השתמשו במילים שלמטה</td></tr>
+  <tr><td class="e">Match the opposites.</td><td>התאימו את ההפכים</td></tr>
+  <tr><td class="e">Choose the correct answer.</td><td>בחרו את התשובה הנכונה</td></tr>
+  <tr><td class="e">Copy the sentence that shows this.</td><td>העתיקו את המשפט שמראה את זה</td></tr>
+  <tr><td class="e">Find examples from the text.</td><td>מצאו דוגמאות מהטקסט</td></tr>
+  <tr><td class="e">Describe the picture.</td><td>תארו את התמונה</td></tr>
+  <tr><td class="e">Listen and repeat.</td><td>האזינו וחזרו</td></tr>
+  <tr><td class="e">Spell your name.</td><td>אייתו את שמכם</td></tr>
+  <tr><td class="e">Raise your hand.</td><td>הרימו יד</td></tr>
+  <tr><td class="e">Guess which sentence is not true.</td><td>נחשו איזה משפט לא נכון</td></tr></table>`)+
+ SEC("כל המילים (לחץ 🔊 לשמיעה)",wordList(W_CLASS)),
+
+unit: () =>
+ SEC("מילים שקל להתבלבל ביניהן",`<table class="rt"><tr><th class="e">Word</th><th>פירוש</th><th>שימו לב</th></tr>
+  <tr><td class="e">glad</td><td>שמח</td><td>כמו happy: <span class="en">I'm glad you're here.</span></td></tr>
+  <tr><td class="e">afraid of</td><td>מפחד מ...</td><td>תמיד עם <b>of</b>: <span class="en">afraid of dogs</span></td></tr>
+  <tr><td class="e">famous / popular</td><td>מפורסם / פופולרי</td><td>famous = הרבה מכירים. popular = הרבה <b>אוהבים</b>.</td></tr>
+  <tr><td class="e">leave / return</td><td>לעזוב / לחזור</td><td>הפכים! <span class="en">leave home ↔ return home</span></td></tr>
+  <tr><td class="e">pick / decide</td><td>לבחור / להחליט</td><td><span class="en">Pick a card. / She decides to buy it.</span></td></tr>
+  <tr><td class="e">about</td><td>בערך</td><td><span class="en">about 100,000 monkeys</span> (וגם "על": a movie about nature)</td></tr>
+  <tr><td class="e">still</td><td>עדיין</td><td><span class="en">You're still in bed!</span></td></tr>
+  <tr><td class="e">saw</td><td>ראה</td><td>עבר של see: <span class="en">I saw a movie yesterday.</span></td></tr>
+  <tr><td class="e">several</td><td>כמה, אחדים</td><td><span class="en">several monkeys</span> – לפני רבים</td></tr>
+  <tr><td class="e">thousand / million</td><td>אלף / מיליון</td><td><span class="en">thousands of people</span> = אלפי אנשים</td></tr></table>`)+
+ SEC("הפכים של שמות תואר",BX("clean ↔ dirty &nbsp;·&nbsp; happy ↔ sad &nbsp;·&nbsp; fat ↔ thin<br>big ↔ small &nbsp;·&nbsp; quick ↔ slow &nbsp;·&nbsp; quiet ↔ noisy"))+
+ SEC("מילים חדשות – יחידה 1",wordList(W_UNIT))+
+ SEC("שמות תואר (ספר עמ' 22)",wordList(W_ADJ)),
+
+food: () =>
+ SEC("צלילים (חוברת עמ' 8–9)",`<table class="rt"><tr><th>צליל</th><th>איך זה נשמע</th><th class="e">Examples</th></tr>
+  <tr><td>Long u</td><td>"אוּ" ארוך / "יוּ"</td><td class="e">June, blue, glue, fruit, juice, tube, suit</td></tr>
+  <tr><td>Soft g</td><td>g לפני e, i, y נשמעת כמו "ג'"</td><td class="e">giraffe, page, cage, age, orange</td></tr>
+  <tr><td>Hard g</td><td>"ג" רגילה</td><td class="e">goat, green, girl, garden, rug</td></tr>
+  <tr><td>Soft c</td><td>c לפני e, i, y נשמעת כמו "ס"</td><td class="e">ice, rice, face, mice, pencil, cereal, cent</td></tr>
+  <tr><td>Hard c</td><td>"ק"</td><td class="e">cat, cap, cake, carrot, candy, computer</td></tr></table>
+  ${KEY("הכלל: <span class='en'>c</span> ו-<span class='en'>g</span> \"מתרככות\" לפני <span class='en'>e, i, y</span>.")}`)+
+ SEC("אוכל",wordList(W_FOOD))+
+ SEC("מילים נוספות מהחוברת",wordList(W_BOOKLET)),
+
+nouns: () =>
+ SEC("מה זה שם עצם (Noun)?",`<p>שם עצם הוא <b>אדם, מקום, בעל חיים, דבר או רעיון</b>.</p>
+  ${BX("a boy, a doctor, Dan &nbsp;·&nbsp; a school, Israel &nbsp;·&nbsp; a dog, Rex &nbsp;·&nbsp; a book, an egg &nbsp;·&nbsp; love, an idea")}
+  ${KEY("שם עצם ביחיד <b>חייב</b> לקבל לפניו סימן: <span class='en'>a / an / the / this / that / my, his, her...</span>")}
+  ${BX(`<span class="bad">House is on street.</span><br><span class="good">The house is on a long street.</span>`)}`)+
+ SEC("a או an?",`<p><b>a / an</b> = אחד. באים רק לפני שם עצם <b>ביחיד</b>.</p>
+  <ul><li><b class="en">a</b> – לפני <b>צליל</b> של עיצור: <span class="en">a table, a book, a dog</span></li>
+  <li><b class="en">an</b> – לפני <b>צליל</b> של תנועה (a, e, i, o, u): <span class="en">an egg, an apple, an onion</span></li></ul>
+  ${KEY("קובע ה<b>צליל</b>, לא האות!")}
+  ${BX("a university, a uniform &nbsp;(שומעים \"יו\")<br>an hour &nbsp;(ה-h שקטה)")}
+  <p>אם יש שם תואר לפני שם העצם – מחליטים לפי <b>שם התואר</b>:</p>
+  ${BX("a <b>b</b>ig apple &nbsp;·&nbsp; an <b>o</b>pen window &nbsp;·&nbsp; an <b>a</b>mazing shirt")}`)+
+ SEC("the = ה' הידיעה",`<p><b class="en">the</b> בא לפני יחיד <b>או</b> רבים, כשמדובר על משהו מסוים / שכבר יודעים עליו.</p>
+  ${BX("I have a dog. <b>The</b> dog is black.<br><b>the</b> sun, <b>the</b> same school")}
+  ${KEY("לפני שם של אדם או מקום <b>לא</b> שמים a / an / the.")}
+  ${BX(`<span class="bad">The Dan is my friend.</span> &nbsp; <span class="good">Dan is my friend.</span><br><span class="good">Japan, Tel Aviv, Mrs. Gordon, Dr. Berman</span>`)}`)+
+ SEC("some, many",`<ul><li><b class="en">some</b> = קצת, כמה. לפני רבים או לפני דברים שלא סופרים: <span class="en">some apples, some water, some sugar</span></li>
+  <li><b class="en">many</b> = הרבה (דברים שסופרים): <span class="en">many books</span></li>
+  <li>כשמדברים באופן כללי – בלי כלום: <span class="en">Dogs are loyal pets.</span></li></ul>`)+
+ SEC("this / that / these / those",`<table class="rt"><tr><th></th><th>קרוב 👇</th><th>רחוק 👉</th></tr>
+  <tr><th>יחיד</th><td class="e"><b>this</b> (זה/זו)<br>This is an apple.</td><td class="e"><b>that</b> (ההוא/ההיא)<br>That is an apple.</td></tr>
+  <tr><th>רבים</th><td class="e"><b>these</b> (אלה)<br>These are apples.</td><td class="e"><b>those</b> (ההם/ההן)<br>Those are apples.</td></tr></table>
+  ${KEY("this/that ← <b>is</b> ויחיד. &nbsp; these/those ← <b>are</b> ורבים.")}`)+
+ SEC("איך הופכים לרבים – 4 כללים + המרדנים",`<table class="rt"><tr><th>כלל</th><th>מתי</th><th class="e">Examples</th></tr>
+  <tr><td><b>1. +s</b></td><td>רוב המילים</td><td class="e">dog → dog<span class="mark">s</span>, window → window<span class="mark">s</span></td></tr>
+  <tr><td><b>2. +es</b></td><td>מסתיים ב-<span class="en">s, ss, sh, ch, x, o</span></td><td class="e">bus → bus<span class="mark">es</span>, dress → dress<span class="mark">es</span>, bench → bench<span class="mark">es</span>, box → box<span class="mark">es</span>, tomato → tomato<span class="mark">es</span></td></tr>
+  <tr><td><b>3. y → ies</b></td><td>עיצור + y</td><td class="e">baby → bab<span class="mark">ies</span>, lady → lad<span class="mark">ies</span>, party → part<span class="mark">ies</span></td></tr>
+  <tr><td><b>4. f/fe → ves</b></td><td>מסתיים ב-f או fe</td><td class="e">knife → kni<span class="mark">ves</span>, shelf → shel<span class="mark">ves</span>, wife → wi<span class="mark">ves</span></td></tr></table>
+  <p><b>יוצאים מן הכלל:</b></p>
+  <ul><li>תנועה + y ← רק s: <span class="en">day → days, boy → boys, toy → toys</span> (התנועה היא "שומר הראש" של ה-y)</li>
+  <li>מסתיימות ב-o אבל רק s: <span class="en">radios, photos, pianos, videos, kilos</span></li>
+  <li>מסתיימות ב-f אבל רק s: <span class="en">roofs, giraffes, chiefs, cliffs</span></li></ul>`)+
+ SEC("המרדנים – צורה מיוחדת (ללמוד בעל פה)",`<table class="rt"><tr><th class="e">Singular</th><th class="e">Plural</th><th class="e">Singular</th><th class="e">Plural</th></tr>
+  <tr><td class="e">a man</td><td class="e">men</td><td class="e">a child</td><td class="e">children</td></tr>
+  <tr><td class="e">a woman</td><td class="e">women</td><td class="e">a person</td><td class="e">people</td></tr>
+  <tr><td class="e">a fisherman</td><td class="e">fishermen</td><td class="e">a mouse</td><td class="e">mice</td></tr>
+  <tr><td class="e">a tooth</td><td class="e">teeth</td><td class="e">a sheep</td><td class="e">sheep</td></tr>
+  <tr><td class="e">a foot</td><td class="e">feet</td><td class="e">a fish</td><td class="e">fish</td></tr></table>`)+
+ SEC("⚠️ הופכים משפט שלם לרבים",`<p>הטעות הכי נפוצה: משנים רק את שם העצם. צריך לשנות <b>הכול</b>:</p>
+  <table class="rt"><tr><th>יחיד</th><th>רבים</th></tr>
+  <tr><td class="e">a / an</td><td class="e">(נעלם) או some</td></tr>
+  <tr><td class="e">is</td><td class="e">are</td></tr>
+  <tr><td class="e">this / that</td><td class="e">these / those</td></tr>
+  <tr><td class="e">there is</td><td class="e">there are</td></tr>
+  <tr><td class="e">he / she / it</td><td class="e">they</td></tr></table>
+  ${BX(`<span class="bad">The new dresses is in the box.</span><br><span class="good">The new dresses are in the box.</span><br><br><span class="bad">There is a fishermans in that boat.</span><br><span class="good">There are fishermen in those boats.</span><br><br>This match is for that candle. → <span class="good">These matches are for those candles.</span>`)}
+  ${KEY("אחרי שכתבת – עבור על המשפט מילה-מילה ושאל: \"האם המילה הזאת צריכה להשתנות?\"")}`),
+
+be: () =>
+ SEC("שמות גוף (Subject Pronouns)",`<p>שם גוף מחליף את הנושא של המשפט, כדי לא לחזור על השם.</p>
+  <table class="rt"><tr><th class="e">Pronoun</th><th>פירוש</th><th>מחליף את</th></tr>
+  <tr><td class="e">I</td><td>אני</td><td>תמיד אות גדולה!</td></tr>
+  <tr><td class="e">you</td><td>אתה, את, אתם, אתן</td><td class="e">you and Peter → You</td></tr>
+  <tr><td class="e">he</td><td>הוא</td><td class="e">Dan, my father → He</td></tr>
+  <tr><td class="e">she</td><td>היא</td><td class="e">Sarah, my mom → She</td></tr>
+  <tr><td class="e">it</td><td>זה (חפץ, חיה, מקום)</td><td class="e">the cake, the book, Japan → It</td></tr>
+  <tr><td class="e">we</td><td>אנחנו</td><td class="e">John and I → We</td></tr>
+  <tr><td class="e">they</td><td>הם, הן</td><td class="e">my parents, the monkeys, my teeth → They</td></tr></table>
+  ${BX("Sarah is my sister. <b>She</b> helps me.<br>My parents are doctors. <b>They</b> work in a hospital.")}`)+
+ SEC("הפועל to be (להיות) – am / is / are",`<table class="rt"><tr><th class="e">+ חיובי</th><th class="e">− שלילי</th><th class="e">קיצור</th></tr>
+  <tr><td class="e">I <b>am</b></td><td class="e">I am not</td><td class="e">I'm / I'm not</td></tr>
+  <tr><td class="e">he / she / it <b>is</b></td><td class="e">he is not</td><td class="e">he's / he isn't</td></tr>
+  <tr><td class="e">you / we / they <b>are</b></td><td class="e">we are not</td><td class="e">we're / we aren't</td></tr></table>
+  ${KEY("יחיד (שם אחד) ← <b>is</b>. &nbsp; שניים ומעלה ← <b>are</b>.<br><span class='en'>Dan is... / Dan and Maya are... / The children are...</span>")}
+  <p>בעברית אומרים "אני בן 11" בלי פועל – באנגלית <b>חייבים</b> am/is/are:</p>
+  ${BX(`<span class="bad">I eleven years old.</span> &nbsp; <span class="good">I am eleven years old.</span>`)}`)+
+ SEC("שלילה",`<p>מוסיפים <b class="en">not</b> <b>אחרי</b> am/is/are.</p>
+  ${BX("She is tall. → She <b>is not</b> tall. / She <b>isn't</b> tall.<br>I am hungry. → I <b>am not</b> hungry. / I'm not hungry.")}
+  ${KEY("אין <span class='en'>amn't</span>! אומרים <span class='en'>I'm not</span>.")}`)+
+ SEC("שאלות כן/לא + תשובה קצרה",`<p>מעבירים את am/is/are <b>לתחילת</b> המשפט:</p>
+  ${BX("They <b>are</b> at school. → <b>Are</b> they at school?<br>She <b>is</b> your sister. → <b>Is</b> she your sister?")}
+  <p>תשובה קצרה – חוזרים על שם הגוף והפועל:</p>
+  ${BX("Is Lisa tall? – Yes, she <b>is</b>. / No, she <b>isn't</b>.<br>Are you afraid? – Yes, I <b>am</b>. / No, I'<b>m not</b>.")}
+  ${KEY("בתשובה חיובית לא מקצרים: <span class='en'>Yes, they are.</span> ולא <span class='en'>Yes, they're.</span>")}`)+
+ SEC("שאלות Wh",`<table class="rt"><tr><th class="e">Word</th><th>פירוש</th><th class="e">Example – Answer</th></tr>
+  <tr><td class="e">What</td><td>מה</td><td class="e">What is your name? – My name is Dan.</td></tr>
+  <tr><td class="e">Where</td><td>איפה</td><td class="e">Where is the ball? – Under the bed.</td></tr>
+  <tr><td class="e">Who</td><td>מי</td><td class="e">Who is he? – He is my brother.</td></tr>
+  <tr><td class="e">When</td><td>מתי</td><td class="e">When is your birthday? – In March.</td></tr>
+  <tr><td class="e">Why</td><td>למה</td><td class="e">Why are you sad? – Because...</td></tr>
+  <tr><td class="e">How</td><td>איך</td><td class="e">How do you go to the beach? – By car.</td></tr>
+  <tr><td class="e">How old</td><td>בן כמה</td><td class="e">How old are you? – I'm eleven.</td></tr>
+  <tr><td class="e">How much</td><td>כמה (עולה)</td><td class="e">How much is it? – 57 shekels.</td></tr></table>
+  ${KEY("סדר: <span class='en'>Wh + is/are + נושא?</span> → <span class='en'>Where <b>are</b> the books?</span>")}`),
+
+have: () =>
+ SEC("have / has = יש ל...",`<table class="rt"><tr><th class="e">have</th><th class="e">has</th></tr>
+  <tr><td class="e">I have<br>you have<br>we have<br>they have<br>Dan and Maya have</td><td class="e">he has<br>she has<br>it has<br>Dan has<br>the cat has</td></tr></table>
+  ${KEY("he / she / it (או שם אחד) ← <b>has</b>. כל השאר ← <b>have</b>.")}
+  ${BX("I <b>have</b> a dog. &nbsp;·&nbsp; She <b>has</b> blue eyes. &nbsp;·&nbsp; Snow monkeys <b>have</b> pink faces.")}`)+
+ SEC("be או have? – זה העיקר!",`<table class="rt"><tr><th>to be (am/is/are)</th><th>to have (have/has)</th></tr>
+  <tr><td>מה מישהו <b>הוא</b>: גיל, איך הוא נראה, איפה הוא, מאיפה הוא</td><td>מה <b>יש</b> לו: חפצים, משפחה, חיות, שיער, עיניים</td></tr>
+  <tr><td class="e">She <b>is</b> tall.<br>I <b>am</b> eleven.<br>He <b>is</b> from Japan.<br>They <b>are</b> at home.</td><td class="e">She <b>has</b> long hair.<br>I <b>have</b> a brother.<br>He <b>has</b> a new bike.<br>They <b>have</b> a cat.</td></tr></table>
+  ${KEY("בעברית: \"<b>יש</b> לי / לה / להם\" ← have/has. &nbsp;\"אני / היא / הם...\" ← am/is/are.")}
+  ${BX(`Hi. I'<b>m</b> Haruki. I'<b>m</b> short. I <b>have</b> black hair.<br>Lisa <b>is</b> tall. She <b>has</b> brown hair.<br><br><span class="bad">I have eleven years old.</span> &nbsp; <span class="good">I am eleven years old.</span><br><span class="bad">She is blue eyes.</span> &nbsp; <span class="good">She has blue eyes.</span>`)}`),
+
+write: () =>
+ SEC("אותיות גדולות (Capital Letters)",`<ul><li>בתחילת <b>כל</b> משפט</li><li>המילה <b class="en">I</b> – תמיד</li>
+  <li>שמות של אנשים וחיות: <span class="en">Dan, Lisa, Rex</span></li>
+  <li>מקומות: <span class="en">Israel, Japan, Haifa, Ben Gurion School</span></li>
+  <li>שפות ותארים: <span class="en">English, Hebrew, Mr., Dr.</span></li>
+  <li>ימים וחודשים: <span class="en">Sunday, March</span></li></ul>
+  ${BX(`<span class="bad">my name is dan. i am from israel.</span><br><span class="good">My name is Dan. I am from Israel.</span>`)}`)+
+ SEC("סימני פיסוק",`<ul><li>משפט רגיל ← נקודה <b>.</b></li><li>שאלה ← סימן שאלה <b>?</b></li><li>התרגשות ← <b>!</b></li></ul>
+  ${BX("I like pizza<b>.</b> &nbsp; Do you like pizza<b>?</b> &nbsp; I love pizza<b>!</b>")}`)+
+ SEC("סדר המילים במשפט",`<p>באנגלית הסדר קבוע:</p>
+  ${BX("<b>Who</b> (נושא) → <b>is/has</b> (פועל) → <b>what / where</b> (השאר)<br>My cat | is | white. &nbsp;·&nbsp; Dana | has | an orange bag.")}
+  <p>שם תואר בא <b>לפני</b> שם העצם (הפוך מעברית!):</p>
+  ${BX("כלב <b>גדול</b> → a <b>big</b> dog &nbsp;·&nbsp; תיק <b>כתום</b> → an <b>orange</b> bag")}
+  <p>"שלי / שלך" באים <b>לפני</b> שם העצם:</p>
+  ${BX("הכלב <b>שלי</b> → <b>my</b> dog &nbsp;·&nbsp; המורה <b>שלנו</b> → <b>our</b> teacher")}`)+
+ SEC("טיפים לתרגום מעברית",`<ol><li>מי הנושא? → שם גוף או שם (I, she, Dan...)</li>
+  <li>יש "יש ל..."? → have / has. אחרת → am / is / are</li>
+  <li>יחיד או רבים? → a / an, ו-s בסוף</li><li>שלילה? → isn't / aren't / am not</li>
+  <li>שאלה? → is/are בהתחלה + ?</li><li>בדוק: אות גדולה בהתחלה, נקודה בסוף.</li></ol>
+  ${BX("\"לחתול שלנו יש עיניים ירוקות.\" → <b>Our cat has green eyes.</b><br>\"הם לא בבית הספר.\" → <b>They aren't at school.</b>")}`)+
+ SEC("כתיבה על עצמי / חבר / חיה",`${BX("This is my friend Noa. She <b>is</b> eleven years old. She <b>is</b> tall and funny. She <b>has</b> brown hair and green eyes. She <b>has</b> a dog. We <b>are</b> good friends.")}
+  ${KEY("השתמש גם ב-am/is/are וגם ב-have/has. כל משפט – אות גדולה ונקודה.")}`),
+
+read: () =>
+ SEC("איך עונים על שאלות הבנת הנקרא",`<ul><li>קוראים קודם את <b>השאלות</b>, ואז את הטקסט – ככה יודעים מה לחפש.</li>
+  <li>עונים ב<b>משפט שלם</b>, עם <b>כל</b> המידע מהטקסט.</li>
+  <li>מותר להעתיק משפט מתאים מהטקסט – עם מירכאות <b>"..."</b>.</li></ul>`)+
+ SEC("1. TRUE / FALSE + העתקת משפט",`${BX("The people are afraid of the wolf.<br>a. TRUE / FALSE<br>b. Copy the sentence that shows this.")}
+  <p>מקיפים, ואז מעתיקים <b>בדיוק</b> את המשפט מהטקסט שמוכיח את התשובה – גם כשהתשובה FALSE.</p>`)+
+ SEC("2. שאלת כן/לא + למה (שני חלקים)",`${BX("Are the people afraid of the wolf? Why?<br><span class='good'>Yes, they are. They are afraid because the wolf is big.</span>")}
+  ${KEY("חלק 1: <span class='en'>Yes, ... is/are.</span> / <span class='en'>No, ... isn't/aren't.</span> &nbsp; חלק 2: <span class='en'>Because...</span> או משפט מהטקסט.")}`)+
+ SEC("3. שאלות Wh",`<p>מסתכלים על מילת השאלה כדי לדעת מה לחפש:</p>
+  <table class="rt"><tr><th class="e">Where</th><td>מקום</td><td class="e">They are in the forest.</td></tr>
+  <tr><th class="e">When</th><td>זמן</td><td class="e">In the winter.</td></tr>
+  <tr><th class="e">Who</th><td>אדם</td><td class="e">Haruki is writing the email.</td></tr>
+  <tr><th class="e">What</th><td>דבר</td><td class="e">They eat plants and fruit.</td></tr>
+  <tr><th class="e">Why</th><td>סיבה</td><td class="e">Because it is cold.</td></tr>
+  <tr><th class="e">How many</th><td>מספר</td><td class="e">About 100,000.</td></tr></table>
+  ${KEY("משתמשים במילים מהשאלה בתשובה: <span class='en'>Where do snow monkeys live? → Snow monkeys live in the mountains.</span>")}`)+
+ SEC("4. Find examples – מצא דוגמאות",`<p>אם שואלים "two things", כותבים <b>שני</b> דברים מהטקסט.</p>${BX("two things snow monkeys eat: <b>plants and fruit</b>")}`),
+
+review: () =>
+ SEC("מה יש במבחן? – רשימת בדיקה",`<ul>
+  <li>📚 <b>אוצר מילים:</b> מילות ההוראות, המילים של יחידה 1, שמות התואר, האוכל – לדעת לתרגם.</li>
+  <li>🔢 <b>יחיד/רבים:</b> 4 כללים + המרדנים. להפוך משפט שלם (גם is→are!).</li>
+  <li>🅰️ <b>a / an / the / some / this / these</b></li>
+  <li>🙋 <b>שמות גוף + to be:</b> חיובי, שלילי, שאלה, Wh.</li>
+  <li>🎒 <b>have / has</b> – ומתי be ומתי have.</li>
+  <li>✍️ <b>כתיבה:</b> משפטים על עצמי / חבר / חיה, תרגום, אותיות גדולות וסימני פיסוק.</li>
+  <li>📖 <b>הבנת הנקרא:</b> TRUE/FALSE + ציטוט, כן/לא + למה, Wh.</li></ul>
+  <p>להסבר מלא – לחץ 📘 בכל נושא בדף הראשי.</p>`)+
+ SEC("לפני שמגישים – בדוק כל משפט",`<ol><li>אות גדולה בהתחלה? ו-I גדולה?</li><li>נקודה / סימן שאלה בסוף?</li><li>יש פועל? (am/is/are או have/has)</li>
+  <li>יחיד או רבים – הכול מתאים? (a, is, this / are, these, s)</li><li>שמות של אנשים ומקומות באות גדולה?</li></ol>`)+
+ SEC("סידור מילים למשפט",`<ol><li>מצא את הנושא (מי?) – הוא ראשון.</li><li>אחריו הפועל: is / are / has / have.</li><li>אם יש <b>?</b> – הפועל עובר להתחלה: <span class="en">Is she in the city?</span>, ואם יש מילת Wh – היא ראשונה: <span class="en">Where is...?</span></li>
+  <li>not בא אחרי is/are: <span class="en">Mother is not tired.</span></li><li>שם תואר לפני שם עצם: <span class="en">a blue bag</span>.</li></ol>
+  ${BX("is / haifa / where / university ? → <b>Where is Haifa University?</b>")}`)
+};
+
+function explain(ti){
+  const t=TOPICS[ti]; S=null;
+  app.innerHTML=`<div class="qbar"><button class="back" onclick="home()">→ חזרה</button><div class="qtitle">📘 הסבר</div></div>
+   <div class="ex-head"><h2>${t.icon} ${t.title}</h2></div>${EXPLAIN[t.id]()}
+   <div class="ex-start">${[0,1,2].map(l=>`<button class="lvl l${l}" onclick="start(${ti},${l})">לתרגול – ${LVL_NAMES[l]}</button>`).join("")}</div>`;
+  window.scrollTo(0,0);
+}
+function explainModal(){
+  const t=S.topic; const m=document.createElement("div"); m.className="modal";
+  m.innerHTML=`<div class="inner"><div class="ex-head"><h2>📘 ${t.title}</h2><button class="btn" id="mclose">חזרה לתרגול ✕</button></div>${EXPLAIN[t.id]()}</div>`;
+  m.onclick=e=>{if(e.target===m)m.remove();}; document.body.appendChild(m); $("#mclose",m).onclick=()=>m.remove();
+}
+
 const TOPICS = [
  {id:"class",group:"א. אוצר מילים",icon:"📚",title:"מילות הוראה בכיתה",desc:"Word Power 1+2 – ספר עמ' 7–10",
   levels:[()=>genEnHe(W_CLASS,10),()=>shuffle([...genHeEn(W_CLASS,5),...genClassSent(5)]),()=>sample(CLASS_HARD,10)]},
@@ -759,11 +1004,11 @@ function home(){
   S=null;
   const prog=loadProg();
   let html=`<header class="top"><div><h1>מתכוננים למבחן באנגלית 🇬🇧</h1><p class="sub">כיתה ו' – מבחן 1</p></div><div class="exam-chip">📅 המבחן: 24.11</div></header>
-  <div class="howto">בכל נושא יש 3 שלבים: <b style="color:var(--easy)">קל</b> → <b style="color:var(--mid)">בינוני</b> → <b style="color:var(--hard)">קשה</b>. כדאי להתחיל בקל ולהתקדם. השאלות מתערבבות בכל פעם, אז אפשר לשחק שוב ושוב. ⭐⭐⭐ = 90% ומעלה.</div>`;
+  <div class="howto">בכל נושא יש 3 שלבים: <b style="color:var(--easy)">קל</b> → <b style="color:var(--mid)">בינוני</b> → <b style="color:var(--hard)">קשה</b>. כדאי לקרוא קודם את ה<b>📘 הסבר</b>, ואז להתחיל בקל ולהתקדם. אפשר לפתוח את ההסבר גם באמצע התרגול. השאלות מתערבבות בכל פעם, אז אפשר לשחק שוב ושוב. ⭐⭐⭐ = 90% ומעלה.</div>`;
   let group="";
   TOPICS.forEach((t,ti)=>{
     if(t.group!==group){ if(group) html+=`</div>`; group=t.group; html+=`<div class="section-title">${group}</div><div class="grid">`; }
-    html+=`<div class="topic"><div class="t-head"><div class="icon">${t.icon}</div><div><h3>${t.title}</h3><p>${t.desc}</p></div></div><div class="levels">`;
+    html+=`<div class="topic"><div class="t-head"><div class="icon">${t.icon}</div><div><h3>${t.title}</h3><p>${t.desc}</p></div></div><button class="exbtn" onclick="explain(${ti})">📘 הסבר לפני התרגול</button><div class="levels">`;
     [0,1,2].forEach(l=>{
       const best=prog[t.id+"_"+l]; const st=best==null?"":("★".repeat(stars(best))+"☆".repeat(3-stars(best)));
       html+=`<button class="lvl l${l}" onclick="start(${ti},${l})">${LVL_NAMES[l]}<span class="stars">${st}</span></button>`;
@@ -784,7 +1029,7 @@ function start(ti,l){
 
 function head(){
   const t=S.topic, pct=Math.round(S.i/S.qs.length*100);
-  return `<div class="qbar"><button class="back" onclick="home()">→ חזרה</button><div class="qtitle">${t.icon} ${t.title}<span class="badge l${S.l}">${LVL_NAMES[S.l]}</span></div></div>
+  return `<div class="qbar"><button class="back" onclick="home()">→ חזרה</button><div class="qtitle">${t.icon} ${t.title}<span class="badge l${S.l}">${LVL_NAMES[S.l]}</span></div><button class="back" onclick="explainModal()">📘 הסבר</button></div>
   <div class="progress"><div style="width:${pct}%"></div></div>`;
 }
 function textHTML(txt){
