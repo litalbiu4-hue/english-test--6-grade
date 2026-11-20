@@ -45,6 +45,12 @@ h1{font-size:28px;margin:0;font-weight:800;letter-spacing:-.3px}
 .back{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 14px;font:inherit;font-size:15px;cursor:pointer}
 .qtitle{font-weight:700;font-size:17px;flex:1}
 .badge{border-radius:999px;padding:3px 10px;color:#fff;font-size:13px;font-weight:700;margin-inline-start:6px}
+.badge.l3,.badge.l4{background:#6b4fbb}
+.wstat{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.wbar{height:7px;background:#e7e1d3;border-radius:999px;overflow:hidden}.wbar>div{height:100%;background:#6b4fbb}
+.allrow{display:flex;gap:8px}
+.allbtn{flex:1;border:2px solid #6b4fbb;background:#fff;color:#6b4fbb;border-radius:12px;padding:7px 6px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.allbtn:hover{background:#f0ebfb}
 .badge.l0{background:var(--easy)} .badge.l1{background:var(--mid)} .badge.l2{background:var(--hard)}
 .progress{height:10px;background:#e7e1d3;border-radius:999px;overflow:hidden;margin-bottom:16px}
 .progress>div{height:100%;background:var(--brand);width:0;transition:width .3s}
@@ -217,16 +223,25 @@ const W_BOOKLET = [
 ];
 
 /* מחולל שאלות אוצר מילים */
+/* מעקב אחרי מילים: מילים שעוד לא נענו נכון נשאלות קודם */
+const W_KEY="eng6_words_v1";
+function loadW(){try{return JSON.parse(localStorage.getItem(W_KEY))||{};}catch(e){return {};}}
+function markWord(k,ok){const m=loadW(); if(ok) m[k]=1; else delete m[k]; try{localStorage.setItem(W_KEY,JSON.stringify(m));}catch(e){}}
+function pickWords(list,n,dir){
+  const m=loadW(); const un=shuffle(list.filter(w=>!m[dir+":"+w[0]])), done=shuffle(list.filter(w=>m[dir+":"+w[0]]));
+  return [...un,...done].slice(0,n);
+}
+function wordStats(list){const m=loadW();return {eh:list.filter(w=>m["eh:"+w[0]]).length,he:list.filter(w=>m["he:"+w[0]]).length,n:list.length};}
 function genEnHe(list,n){
-  return sample(list,n).map(([e,h])=>{
+  return pickWords(list,n,"eh").map(([e,h])=>{
     const wrong=sample(list.filter(x=>x[0]!==e&&x[1]!==h),3).map(x=>x[1]);
-    return {t:"mc",q:`מה הפירוש של ${en(`<span class="big">${esc(e)}</span>`)}? ${spk(e)}`,o:[h,...wrong],ans:`${e} = ${h}`};
+    return {t:"mc",q:`מה הפירוש של ${en(`<span class="big">${esc(e)}</span>`)}? ${spk(e)}`,o:[h,...wrong],ans:`${e} = ${h}`,mkey:"eh:"+e};
   });
 }
 function genHeEn(list,n){
-  return sample(list,n).map(([e,h])=>{
+  return pickWords(list,n,"he").map(([e,h])=>{
     const wrong=sample(list.filter(x=>x[0]!==e&&x[1]!==h),3).map(x=>x[0]);
-    return {t:"mc",q:`איך אומרים באנגלית: <span class="big">${esc(h)}</span>?`,o:[e,...wrong],enOpts:true,ans:`${h} = ${e}`};
+    return {t:"mc",q:`איך אומרים באנגלית: <span class="big">${esc(h)}</span>?`,o:[e,...wrong],enOpts:true,ans:`${h} = ${e}`,mkey:"he:"+e};
   });
 }
 const mcEn = (q,o,ex) => ({t:"mc",q,o,enOpts:true,ex});
@@ -1002,13 +1017,13 @@ function explainModal(){
 }
 
 const TOPICS = [
- {id:"class",group:"א. אוצר מילים",icon:"📚",title:"מילות הוראה בכיתה",desc:"Word Power 1+2 – ספר עמ' 7–10",
+ {id:"class",words:()=>W_CLASS,group:"א. אוצר מילים",icon:"📚",title:"מילות הוראה בכיתה",desc:"Word Power 1+2 – ספר עמ' 7–10",
   levels:[()=>genEnHe(W_CLASS,10),()=>shuffle([...genHeEn(W_CLASS,5),...genClassSent(5)]),()=>sample(CLASS_HARD,10)]},
- {id:"unit",group:"א. אוצר מילים",icon:"🗾",title:"יחידה 1: יפן וקופי שלג",desc:"מילים חדשות + שמות תואר – ספר עמ' 12, 20, 22",
+ {id:"unit",words:()=>[...W_UNIT,...W_ADJ],group:"א. אוצר מילים",icon:"🗾",title:"יחידה 1: יפן וקופי שלג",desc:"מילים חדשות + שמות תואר – ספר עמ' 12, 20, 22",
   levels:[()=>genEnHe([...W_UNIT,...W_ADJ],10),()=>genHeEn([...W_UNIT,...W_ADJ],10),()=>sample(UNIT_HARD,10)]},
- {id:"food",group:"א. אוצר מילים",icon:"🍎",title:"אוכל",desc:"חוברת עמ' 16–17",
+ {id:"food",words:()=>W_FOOD,group:"א. אוצר מילים",icon:"🍎",title:"אוכל",desc:"חוברת עמ' 16–17",
   levels:[()=>shuffle([...genEmoji(5),...genEnHe(W_FOOD,7)]),()=>genHeEn(W_FOOD,12),()=>shuffle([...FOOD_HARD.slice(0,8),...genHeEn(W_FOOD,2)])]},
- {id:"sounds",group:"א. אוצר מילים",icon:"🔤",title:"מילים מדפי הצלילים",desc:"חוברת עמ' 4–7 (long a/e/i/o) ו-8–9 (long u, soft g/c)",
+ {id:"sounds",words:()=>[...W_SOUNDS,...W_BOOKLET],group:"א. אוצר מילים",icon:"🔤",title:"מילים מדפי הצלילים",desc:"חוברת עמ' 4–7 (long a/e/i/o) ו-8–9 (long u, soft g/c)",
   levels:[()=>genEnHe([...W_SOUNDS,...W_BOOKLET],12),()=>genHeEn([...W_SOUNDS,...W_BOOKLET],12),()=>shuffle([...sample(SOUND_Q,8),...sample(FOOD_HARD.slice(8),4),...genEnHe([...W_SOUNDS,...W_BOOKLET],2)])]},
  {id:"nouns",group:"ב. דקדוק",icon:"🔢",title:"יחיד ורבים, a/an, the, some, this/these",desc:"קובץ ההסברים והתרגול, קובץ תרגול I",
   levels:[genNounEasy,()=>shuffle([...sample(NOUN_MID,7),...genPluralType(5)]),()=>sample(NOUN_HARD,10)]},
@@ -1023,7 +1038,8 @@ const TOPICS = [
  {id:"review",group:"ה. דפי חזרה – כמו במבחן",icon:"🎯",title:"דפי חזרה למבחן 1",desc:"אוצר מילים במשפטים · be/have, שמות גוף, a/an/the/some · סידור משפטים ו-About Me",
   levels:[()=>genBank(12),()=>sample(REV_GRAM,12),()=>[...genArrange(6),...sample(ABOUT_ME,3),...sample(DESCRIBE,1)]]},
 ];
-const LVL_NAMES=["קל","בינוני","קשה"];
+const LVL_NAMES=["קל","בינוני","קשה","כל המילים: אנגלית ← עברית","כל המילים: עברית ← אנגלית"];
+TOPICS.forEach(t=>{ if(t.words){ t.levels[3]=()=>genEnHe(t.words(),999); t.levels[4]=()=>genHeEn(t.words(),999);} });
 
 /* =========================================================
    בדיקת תשובות מוקלדות
@@ -1071,9 +1087,15 @@ function home(){
       const best=prog[t.id+"_"+l]; const st=best==null?"":("★".repeat(stars(best))+"☆".repeat(3-stars(best)));
       html+=`<button class="lvl l${l}" onclick="start(${ti},${l})">${LVL_NAMES[l]}<span class="stars">${st}</span></button>`;
     });
-    html+=`</div></div>`;
+    html+=`</div>`;
+    if(t.words){
+      const w=wordStats(t.words());
+      html+=`<div class="wstat"><div class="wbar"><div style="width:${Math.round(w.eh/w.n*100)}%"></div></div><span>✅ יודע: ${w.eh}/${w.n} (אנגלית ← עברית) · ${w.he}/${w.n} (עברית ← אנגלית)</span></div>
+      <div class="wstat" style="font-weight:700;color:#6b4fbb">📝 תרגול כל ${w.n} המילים:</div><div class="allrow"><button class="allbtn" onclick="start(${ti},3)">אנגלית ← עברית</button><button class="allbtn" onclick="start(${ti},4)">עברית ← אנגלית</button></div>`;
+    }
+    html+=`</div>`;
   });
-  html+=`</div><div class="resetall"><button class="linkbtn" onclick="if(confirm('לאפס את כל הכוכבים?')){saveProg({});home();}">איפוס התקדמות</button></div>`;
+  html+=`</div><div class="resetall"><button class="linkbtn" onclick="if(confirm('לאפס את כל הכוכבים ואת מעקב המילים?')){saveProg({});try{localStorage.removeItem(W_KEY);}catch(e){};home();}">איפוס התקדמות</button></div>`;
   app.innerHTML=html; window.scrollTo(0,0);
 }
 function stars(p){return p>=90?3:p>=70?2:p>=50?1:0;}
@@ -1136,6 +1158,7 @@ function wire(q){
   if(q.t==="mc"){
     document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
       const ok=b.dataset.v===q.o[0];
+      if(q.mkey) markWord(q.mkey,ok);
       document.querySelectorAll(".opt").forEach(x=>{x.disabled=true; if(x.dataset.v===q.o[0]) x.classList.add("ok");});
       if(!ok) b.classList.add("bad");
       finish(ok?1:0, ok?"כל הכבוד! ✔️":"לא נכון. התשובה הנכונה מסומנת בירוק.", q.ex, q.ans||plain(q.q)+" → "+stripTags(q.o[0]));
